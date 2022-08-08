@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.10.0",
+    "@omtanke/react-use-event-outside": "^1.0.1",
+    "@reactour/tour": "^2.13.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
@@ -10,10 +13,37 @@
     "@types/node": "^16.11.47",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
+    "@types/react-router": "^5.1.18",
+    "apexcharts": "^3.35.4",
+    "classnames": "^2.3.1",
+    "formik": "^2.2.9",
+    "framer-motion": "^7.0.0",
+    "moment": "^2.29.4",
+    "pascalcase": "^2.0.0",
+    "payment": "^2.4.6",
+    "prismjs": "^1.28.0",
     "react": "^18.2.0",
+    "react-apexcharts": "^1.4.0",
+    "react-big-calendar": "^1.5.0",
+    "react-credit-cards": "^0.8.3",
+    "react-date-range": "^1.4.0",
     "react-dom": "^18.2.0",
+    "react-i18next": "^11.18.3",
+    "react-input-mask": "^2.0.4",
+    "react-jss": "^10.9.2",
+    "react-notifications-component": "^4.0.1",
+    "react-number-format": "^4.9.3",
+    "react-popper": "^2.3.0",
+    "react-router-dom": "^6.3.0",
+    "react-router-hash-link": "^2.4.3",
     "react-scripts": "5.0.1",
+    "react-scrollspy": "^3.4.3",
+    "react-syntax-highlighter": "^15.5.0",
+    "react-toast-notifications": "^2.5.1",
+    "react-transition-group": "^4.4.5",
+    "react-use": "^17.4.0",
     "typescript": "^4.7.4",
+    "use-clipboard-copy": "^0.2.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -39,5 +69,15 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/pascalcase": "^1.0.1",
+    "@types/prismjs": "^1.26.0",
+    "@types/react-big-calendar": "^0.38.1",
+    "@types/react-input-mask": "^3.0.1",
+    "@types/react-router-hash-link": "^2.4.5",
+    "@types/react-scrollspy": "^3.3.5",
+    "@types/react-syntax-highlighter": "^15.5.4",
+    "@types/react-transition-group": "^4.4.5"
   }
 }
