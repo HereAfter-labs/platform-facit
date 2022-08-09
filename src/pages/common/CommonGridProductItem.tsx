@@ -140,13 +140,13 @@ const CommonGridProductItem: FC<ICommonGridProductItemProps> = ({
 				<div className='row align-items-center'>
 					<div className='col'>Monthly sales</div>
 					<div className='col-auto'>
-						<Chart
+						{/* <Chart
 							series={series}
 							options={dummyOptions}
 							type={dummyOptions.chart?.type}
 							height={dummyOptions.chart?.height}
 							width={dummyOptions.chart?.width}
-						/>
+						/> */}
 					</div>
 				</div>
 			</CardBody>

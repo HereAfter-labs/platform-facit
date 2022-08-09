@@ -122,12 +122,12 @@ const CommonApprovedAppointmentChart = () => {
 				<div className='position-absolute'>
 					<span className='display-3 me-3'>12</span>
 				</div>
-				<Chart
+				{/* <Chart
 					series={approvedAppointments.series}
 					options={approvedAppointments.options}
 					type={approvedAppointments.options.chart?.type}
 					height={approvedAppointments.options.chart?.height}
-				/>
+				/> */}
 			</CardBody>
 		</Card>
 	);

@@ -110,12 +110,12 @@ const CommonPercentageOfLoadChart = () => {
 				<div className='position-absolute'>
 					<span className='display-3 me-3'>18%</span>
 				</div>
-				<Chart
+				{/* <Chart
 					series={percentageOfLoad.series}
 					options={percentageOfLoad.options}
 					type={percentageOfLoad.options.chart?.type}
 					height={percentageOfLoad.options.chart?.height}
-				/>
+				/> */}
 			</CardBody>
 		</Card>
 	);

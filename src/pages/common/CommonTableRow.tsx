@@ -104,13 +104,13 @@ const CommonTableRow: FC<ICommonTableRowProps> = ({
 				</div>
 			</td>
 			<td>
-				<Chart
+				{/* <Chart
 					series={series}
 					options={dummyOptions}
 					type={dummyOptions.chart?.type}
 					height={dummyOptions.chart?.height}
 					width={dummyOptions.chart?.width}
-				/>
+				/> */}
 			</td>
 			<td>
 				<span>{stock}</span>

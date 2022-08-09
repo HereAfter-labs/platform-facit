@@ -145,12 +145,12 @@ const CommonIncome = () => {
 				</CardActions>
 			</CardHeader>
 			<CardBody>
-				<Chart
+				{/* <Chart
 					series={state.series}
 					options={state.options}
 					type={state.options.chart?.type}
 					height={state.options.chart?.height}
-				/>
+				/> */}
 			</CardBody>
 		</Card>
 	);
