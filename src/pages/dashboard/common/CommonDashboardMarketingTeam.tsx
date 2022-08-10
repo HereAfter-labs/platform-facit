@@ -28,7 +28,7 @@ const CommonDashboardMarketingTeam = () => {
 			<CardHeader className='bg-transparent'>
 				<CardLabel>
 					<CardTitle tag='h4' className='h5'>
-						Marketing Team
+						Codeware Team Discussion
 					</CardTitle>
 					<CardSubTitle tag='h5' className='h6 text-muted'>
 						There is a meeting at 12 o'clock.
