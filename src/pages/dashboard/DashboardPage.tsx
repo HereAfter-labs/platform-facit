@@ -11,7 +11,7 @@ import SubHeader, {
 import Page from '../../layout/Page/Page';
 import { TABS, TTabs } from './common/helper';
 import Button, { ButtonGroup } from '../../components/bootstrap/Button';
-
+import Switch from 'react-switch';
 import CommonAvatarTeam from '../../common/other/CommonAvatarTeam';
 
 import CommonDashboardAlert from './common/CommonDashboardAlert';
@@ -30,7 +30,11 @@ const DashboardPage = () => {
 	/**
 	 * Tour Start
 	 */
+	
 	const { setIsOpen } = useTour();
+
+	const [checked, toggle] = useState<boolean>(true);
+
 	useEffect(() => {
 		if (localStorage.getItem('tourModalStarted') !== 'shown') {
 			setTimeout(() => {
@@ -41,7 +45,7 @@ const DashboardPage = () => {
 		return () => {};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
+    
 	const { themeStatus } = useDarkMode();
 
 	const [activeTab, setActiveTab] = useState<TTabs>(TABS.YEARLY);
@@ -51,9 +55,9 @@ const DashboardPage = () => {
 		<PageWrapper title=''>
 			<SubHeader>
 				<SubHeaderLeft>
-					<span className='h4 mb-0 fw-bold'>Overview</span>
+					<span className='h4 mb-0 fw-bold'>Cockpit</span>
 					<SubheaderSeparator />
-					<ButtonGroup>
+					{/* <ButtonGroup>
 						{Object.keys(TABS).map((key) => (
 							<Button
 								key={key}
@@ -62,7 +66,8 @@ const DashboardPage = () => {
 								{TABS[key]}
 							</Button>
 						))}
-					</ButtonGroup>
+					</ButtonGroup> */}
+				Remote	 <Switch onChange={(ck) => toggle(ck)} checked={checked} />  In Office
 				</SubHeaderLeft>
 				<SubHeaderRight>
 					<CommonAvatarTeam>

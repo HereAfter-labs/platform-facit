@@ -17,7 +17,7 @@ const CommonDashboardRecentActivities = () => {
 			<CardHeader>
 				<CardLabel icon='NotificationsActive' iconColor='warning'>
 					<CardTitle tag='h4' className='h5'>
-						Recent Activities
+						Calendar
 					</CardTitle>
 					<CardSubTitle>last 2 weeks</CardSubTitle>
 				</CardLabel>

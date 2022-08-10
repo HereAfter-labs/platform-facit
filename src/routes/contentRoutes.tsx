@@ -5,7 +5,7 @@ import Login from '../pages/presentation/auth/Login';
 const LANDING = {
 	DASHBOARD: lazy(() => import('../pages/dashboard/DashboardPage')),
 	//DASHBOARD_BOOKING: lazy(() => import('../pages/dashboard/DashboardBookingPage')),
-	SUMMARY: lazy(() => import('../pages/SummaryPage')),
+	//SUMMARY: lazy(() => import('../pages/SummaryPage')),
 };
 // const SINGLE = {
 // 	BOXED: lazy(() => import('../pages/presentation/single-pages/SingleBoxedPage')),
@@ -289,11 +289,11 @@ const presentation = [
 	/**
 	 * Auth Page
 	 */
-	{
-		path: demoPages.page404.path,
-		element: <AUTH.PAGE_404 />,
-		exact: true,
-	},
+	// {
+	// 	path: demoPages.page404.path,
+	// 	element: <AUTH.PAGE_404 />,
+	// 	exact: true,
+	// },
 	{
 		path: demoPages.login.path,
 		element: <Login />,

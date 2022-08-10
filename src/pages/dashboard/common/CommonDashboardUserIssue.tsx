@@ -165,7 +165,7 @@ const CommonDashboardUserIssue = () => {
 			<CardHeader>
 				<CardLabel icon='AssignmentTurnedIn' iconColor='danger'>
 					<CardTitle tag='h4' className='h5'>
-						John's Issue
+						To-do's
 					</CardTitle>
 					<CardSubTitle>
 						<Progress

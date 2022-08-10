@@ -15,6 +15,7 @@ import AuthContext from '../../../contexts/authContext';
 import USERS, { getUserDataWithUsername } from '../../../common/data/userDummyData';
 import Spinner from '../../../components/bootstrap/Spinner';
 import Alert from '../../../components/bootstrap/Alert';
+import axios from 'axios';
 
 interface ILoginHeaderProps {
 	isNewUser?: boolean;
@@ -55,6 +56,11 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 	};
 
 	const passwordCheck = (username: string, password: string) => {
+		// axios.get('').
+		// then(response => {
+        //    console.log(response);
+		//    return true;
+		// }).catch(error => {console.log(error);});
 		return getUserDataWithUsername(username).password === password;
 	};
 
