@@ -46,25 +46,18 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 	const { darkModeStatus } = useDarkMode();
 
 	const [signInPassword, setSignInPassword] = useState<boolean>(false);
-	const [singUpStatus, setSingUpStatus] = useState<boolean>(!!isSignUp);
+	const [signUpStatus, setSignUpStatus] = useState<boolean>(!!isSignUp);
 
 	const navigate = useNavigate();
 	const handleOnClick = useCallback(() => navigate('/'), [navigate]);
 
 	const usernameCheck = (username: string) => {
-		return !!getUserDataWithUsername(username);
+		//return !!getUserDataWithUsername(username);
+		return true;
 	};
 
-	const passwordCheck = (username: string, password: string) => {
-		// axios.get('').
-		// then(response => {
-        //    console.log(response);
-		//    return true;
-		// }).catch(error => {console.log(error);});
-		return getUserDataWithUsername(username).password === password;
-	};
 
-	const formik = useFormik({
+	const loginformik = useFormik({
 		enableReinitialize: true,
 		initialValues: {
 			loginUsername: USERS.JOHN.username,
@@ -86,15 +79,22 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 		validateOnChange: false,
 		onSubmit: (values) => {
 			if (usernameCheck(values.loginUsername)) {
-				if (passwordCheck(values.loginUsername, values.loginPassword)) {
-					if (setUser) {
-						setUser(values.loginUsername);
-					}
-
-					handleOnClick();
-				} else {
-					formik.setFieldError('loginPassword', 'Username and password do not match.');
-				}
+				axios.post('https://api.hereafter.work/login',{
+					email: values.loginUsername,
+					password: values.loginPassword
+				}).
+					then(response => {
+					if(response.status == 200)
+					   {
+						if (setUser) {
+							setUser(values.loginUsername);
+						}
+						handleOnClick();
+					   }
+					})
+					.catch(error => {console.log(error); 
+						loginformik.setFieldError('loginPassword', 'Username and password do not match.');
+					}); 
 			}
 		},
 	});
@@ -105,10 +105,12 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 		setTimeout(() => {
 			if (
 				!Object.keys(USERS).find(
-					(f) => USERS[f].username.toString() === formik.values.loginUsername,
+					(f) => USERS[f].username.toString() === loginformik.values.loginUsername,
 				)
 			) {
-				formik.setFieldError('loginUsername', 'No such user found in the system.');
+				setSignInPassword(true);
+				console.log();
+				//formik.setFieldError('loginUsername', 'No such user found in the system.');
 			} else {
 				setSignInPassword(true);
 			}
@@ -116,11 +118,54 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 		}, 1000);
 	};
 
+	const signUpformik = useFormik({
+		enableReinitialize: true,
+		initialValues: {
+			signUpEmail: '',
+			signUpPassword: '',
+			signUpName: '',
+			signUpSurname: ''
+		},
+		validate: (values) => {
+			const errors: { signUpEmail?: string; signUpPassword?: string, signUpName ?: string, signUpSurname ?:string } = {};
+
+			if (!values.signUpName) {
+				errors.signUpName = 'Required';
+			}
+
+			if (!values.signUpSurname) {
+				errors.signUpSurname = 'Required';
+			}
+
+			if (!values.signUpEmail) {
+				errors.signUpEmail = 'Required';
+			}
+
+			if (!values.signUpPassword) {
+				errors.signUpPassword = 'Required';
+			}
+
+			return errors;
+		},
+		validateOnChange: false,
+		onSubmit: (values) => {
+			axios.post('https://api.hereafter.work/signup',{
+			name: values.signUpName + ' ' + values.signUpSurname,
+			email: values.signUpEmail,
+			password: values.signUpPassword
+		  }).
+			then(response => {
+				console.log(response);
+			}).catch(error => {console.log(error);});
+			//return getUserDataWithUsername(username).password === password;
+		},
+	});
+
 	return (
 		<PageWrapper
 			isProtected={false}
-			title={singUpStatus ? 'Sign Up' : 'Login'}
-			className={classNames({ 'bg-warning': !singUpStatus, 'bg-info': singUpStatus })}>
+			title={signUpStatus ? 'Sign Up' : 'Login'}
+			className={classNames({ 'bg-warning': !signUpStatus, 'bg-info': signUpStatus })}>
 			<Page className='p-0'>
 				<div className='row h-100 align-items-center justify-content-center'>
 					<div className='col-xl-4 col-lg-6 col-md-8 shadow-3d-container'>
@@ -148,12 +193,12 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 										<div className='col'>
 											<Button
 												color={darkModeStatus ? 'light' : 'dark'}
-												isLight={singUpStatus}
+												isLight={signUpStatus}
 												className='rounded-1 w-100'
 												size='lg'
 												onClick={() => {
 													setSignInPassword(false);
-													setSingUpStatus(!singUpStatus);
+													setSignUpStatus(!signUpStatus);
 												}}>
 												Login
 											</Button>
@@ -161,12 +206,12 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 										<div className='col'>
 											<Button
 												color={darkModeStatus ? 'light' : 'dark'}
-												isLight={!singUpStatus}
+												isLight={!signUpStatus}
 												className='rounded-1 w-100'
 												size='lg'
 												onClick={() => {
 													setSignInPassword(false);
-													setSingUpStatus(!singUpStatus);
+													setSignUpStatus(!signUpStatus);
 												}}>
 												Sign Up
 											</Button>
@@ -174,9 +219,9 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 									</div>
 								</div>
 
-								<LoginHeader isNewUser={singUpStatus} />
+								<LoginHeader isNewUser={signUpStatus} />
 
-								<Alert isLight icon='Lock' isDismissible>
+								{/* <Alert isLight icon='Lock' isDismissible>
 									<div className='row'>
 										<div className='col-12'>
 											<strong>Username:</strong> {USERS.JOHN.username}
@@ -185,16 +230,26 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 											<strong>Password:</strong> {USERS.JOHN.password}
 										</div>
 									</div>
-								</Alert>
+								</Alert> */}
 								<form className='row g-4'>
-									{singUpStatus ? (
+									{signUpStatus ? (
 										<>
 											<div className='col-12'>
 												<FormGroup
 													id='signup-email'
 													isFloating
 													label='Your email'>
-													<Input type='email' autoComplete='email' />
+													<Input
+														autoComplete='email'
+														value={signUpformik.values.signUpEmail}
+														isTouched={signUpformik.touched.signUpEmail}
+														invalidFeedback={
+															signUpformik.errors.signUpEmail
+														}
+														validFeedback='Looks good!'
+														isValid={signUpformik.isValid}
+														onBlur={signUpformik.handleBlur}
+													/>
 												</FormGroup>
 											</div>
 											<div className='col-12'>
@@ -202,7 +257,17 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 													id='signup-name'
 													isFloating
 													label='Your name'>
-													<Input autoComplete='given-name' />
+												    <Input
+														autoComplete='current-password'
+														value={signUpformik.values.signUpName}
+														isTouched={signUpformik.touched.signUpName}
+														invalidFeedback={
+															signUpformik.errors.signUpName
+														}
+														validFeedback='Looks good!'
+														isValid={signUpformik.isValid}
+														onBlur={signUpformik.handleBlur}
+													/>
 												</FormGroup>
 											</div>
 											<div className='col-12'>
@@ -210,7 +275,17 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 													id='signup-surname'
 													isFloating
 													label='Your surname'>
-													<Input autoComplete='family-name' />
+													<Input
+														autoComplete='current-password'
+														value={signUpformik.values.signUpSurname}
+														isTouched={signUpformik.touched.signUpSurname}
+														invalidFeedback={
+															signUpformik.errors.signUpSurname
+														}
+														validFeedback='Looks good!'
+														isValid={signUpformik.isValid}
+														onBlur={signUpformik.handleBlur}
+													/>
 												</FormGroup>
 											</div>
 											<div className='col-12'>
@@ -220,7 +295,15 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 													label='Password'>
 													<Input
 														type='password'
-														autoComplete='password'
+														autoComplete='current-password'
+														value={signUpformik.values.signUpPassword}
+														isTouched={signUpformik.touched.signUpPassword}
+														invalidFeedback={
+															signUpformik.errors.signUpPassword
+														}
+														validFeedback='Looks good!'
+														isValid={signUpformik.isValid}
+														onBlur={signUpformik.handleBlur}
 													/>
 												</FormGroup>
 											</div>
@@ -228,7 +311,7 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 												<Button
 													color='info'
 													className='w-100 py-3'
-													onClick={handleOnClick}>
+													onClick={signUpformik.handleSubmit}>
 													Sign Up
 												</Button>
 											</div>
@@ -245,22 +328,22 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 													})}>
 													<Input
 														autoComplete='username'
-														value={formik.values.loginUsername}
-														isTouched={formik.touched.loginUsername}
+														value={loginformik.values.loginUsername}
+														isTouched={loginformik.touched.loginUsername}
 														invalidFeedback={
-															formik.errors.loginUsername
+															loginformik.errors.loginUsername
 														}
-														isValid={formik.isValid}
-														onChange={formik.handleChange}
-														onBlur={formik.handleBlur}
+														isValid={loginformik.isValid}
+														onChange={loginformik.handleChange}
+														onBlur={loginformik.handleBlur}
 														onFocus={() => {
-															formik.setErrors({});
+															loginformik.setErrors({});
 														}}
 													/>
 												</FormGroup>
 												{signInPassword && (
 													<div className='text-center h4 mb-3 fw-bold'>
-														Hi, {formik.values.loginUsername}.
+														Hi, {loginformik.values.loginUsername}.
 													</div>
 												)}
 												<FormGroup
@@ -273,15 +356,15 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 													<Input
 														type='password'
 														autoComplete='current-password'
-														value={formik.values.loginPassword}
-														isTouched={formik.touched.loginPassword}
+														value={loginformik.values.loginPassword}
+														isTouched={loginformik.touched.loginPassword}
 														invalidFeedback={
-															formik.errors.loginPassword
+															loginformik.errors.loginPassword
 														}
 														validFeedback='Looks good!'
-														isValid={formik.isValid}
-														onChange={formik.handleChange}
-														onBlur={formik.handleBlur}
+														isValid={loginformik.isValid}
+														onChange={loginformik.handleChange}
+														onBlur={loginformik.handleBlur}
 													/>
 												</FormGroup>
 											</div>
@@ -290,7 +373,7 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 													<Button
 														color='warning'
 														className='w-100 py-3'
-														isDisable={!formik.values.loginUsername}
+														isDisable={!loginformik.values.loginUsername}
 														onClick={handleContinue}>
 														{isLoading && (
 															<Spinner isSmall inButton isGrow />
@@ -301,7 +384,7 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 													<Button
 														color='warning'
 														className='w-100 py-3'
-														onClick={formik.handleSubmit}>
+														onClick={loginformik.handleSubmit}>
 														Login
 													</Button>
 												)}
@@ -351,16 +434,16 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 							<a
 								href='/'
 								className={classNames('text-decoration-none me-3', {
-									'link-light': singUpStatus,
-									'link-dark': !singUpStatus,
+									'link-light': signUpStatus,
+									'link-dark': !signUpStatus,
 								})}>
 								Privacy policy
 							</a>
 							<a
 								href='/'
 								className={classNames('link-light text-decoration-none', {
-									'link-light': singUpStatus,
-									'link-dark': !singUpStatus,
+									'link-light': signUpStatus,
+									'link-dark': !signUpStatus,
 								})}>
 								Terms of use
 							</a>

@@ -160,7 +160,7 @@ const CommonDashboardIncome: FC<ICommonDashboardIncomeProps> = ({ activeTab }) =
 			<CardHeader>
 				<CardLabel icon='PointOfSale' iconColor='success'>
 					<CardTitle tag='h4' className='h5'>
-						Income
+						One Click Panel
 					</CardTitle>
 					<CardSubTitle>{activeTab}</CardSubTitle>
 				</CardLabel>
@@ -195,7 +195,7 @@ const CommonDashboardIncome: FC<ICommonDashboardIncomeProps> = ({ activeTab }) =
 							<CardHeader className='bg-transparent'>
 								<CardLabel>
 									<CardTitle tag='h4' className='h5'>
-										Sales
+										File
 									</CardTitle>
 								</CardLabel>
 							</CardHeader>
@@ -249,7 +249,7 @@ const CommonDashboardIncome: FC<ICommonDashboardIncomeProps> = ({ activeTab }) =
 							<CardHeader className='bg-transparent'>
 								<CardLabel>
 									<CardTitle tag='h4' className='h5'>
-										Campaigns
+										Message
 									</CardTitle>
 								</CardLabel>
 							</CardHeader>
@@ -287,7 +287,7 @@ const CommonDashboardIncome: FC<ICommonDashboardIncomeProps> = ({ activeTab }) =
 							<CardHeader className='bg-transparent'>
 								<CardLabel>
 									<CardTitle tag='h4' className='h5'>
-										Coupons
+									Tasks and Meetings
 									</CardTitle>
 								</CardLabel>
 							</CardHeader>
