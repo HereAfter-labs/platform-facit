@@ -411,7 +411,7 @@ export const demoPages = {
 	//},
 };
 
-export const layoutMenu = {
+export const officeMenu = {
 	layoutTypes: {
 		id: 'layoutTypes',
 		text: 'Office',
@@ -455,10 +455,10 @@ export const layoutMenu = {
 		icon: 'BackupTable',
 	},
 	calendar: {
-		id: 'pageLayout',
+		id: 'calendar',
 		text: 'Calendar',
-		path: 'page-layouts',
-		icon: 'BackupTable',
+		path: 'appointment/calendar',
+		icon: 'CalendarViewMonth',
 	},
 	oclock: {
 		id: 'pageLayout',

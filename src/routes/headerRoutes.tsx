@@ -1,5 +1,5 @@
 import React from 'react';
-import { dashboardMenu, demoPages, layoutMenu } from '../menu';
+import { dashboardMenu, demoPages } from '../menu';
 import DashboardHeader from '../pages/common/Headers/DashboardHeader';
 import DashboardBookingHeader from '../pages/common/Headers/DashboardBookingHeader';
 import ProfilePageHeader from '../pages/common/Headers/ProfilePageHeader';

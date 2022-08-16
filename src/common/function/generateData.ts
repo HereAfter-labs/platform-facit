@@ -1,6 +1,6 @@
 const generateData = (baseval: number, count: number, yrange: { min: any; max: any }) => {
 	let i = 0;
-	const series = [];
+	const series : number[][] = [];
 	while (i < count) {
 		const x = Math.floor(Math.random() * (750 - 1 + 1)) + 1;
 		const y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;

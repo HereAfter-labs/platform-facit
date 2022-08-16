@@ -6,7 +6,7 @@ import Breadcrumb from '../../../components/bootstrap/Breadcrumb';
 import Humans from '../../../assets/img/scene5.png';
 import HumansWebp from '../../../assets/img/scene5.webp';
 import CommonLayoutRightSubheader from '../../common/SubHeaders/CommonLayoutRightSubheader';
-import { layoutMenu } from '../../../menu';
+//import { layoutMenu } from '../../../menu';
 
 const DefaultAsidePage = () => {
 	return (

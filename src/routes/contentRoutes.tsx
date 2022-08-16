@@ -1,5 +1,5 @@
 import React, { lazy } from 'react';
-import { dashboardMenu, demoPages, layoutMenu } from '../menu';
+import { dashboardMenu, demoPages, officeMenu } from '../menu';
 import Login from '../pages/presentation/auth/Login';
 
 const LANDING = {
@@ -34,7 +34,7 @@ const LANDING = {
    const AUTH = {
 	PAGE_404: lazy(() => import('../pages/presentation/auth/Page404')),
    };
-// const APP = {
+const APP = {
 // 	PROJECT_MANAGEMENT: {
 // 		PROJECTS_LIST: lazy(
 // 			() => import('../pages/presentation/project-management/ProjectManagementsList'),
@@ -53,12 +53,12 @@ const LANDING = {
 // 		PRODUCTS_GRID: lazy(() => import('../pages/presentation/sales/ProductsGridPage')),
 // 		PRODUCTS_VIEW: lazy(() => import('../pages/presentation/sales/ProductViewPage')),
 // 	},
-// 	APPOINTMENT: {
-// 		CALENDAR: lazy(() => import('../pages/presentation/appointment/CalendarPage')),
+ 	APPOINTMENT: {
+ 		CALENDAR: lazy(() => import('../pages/presentation/appointment/CalendarPage')),
 // 		EMPLOYEE_LIST: lazy(() => import('../pages/presentation/appointment/EmployeeList')),
 // 		EMPLOYEE_VIEW: lazy(() => import('../pages/presentation/appointment/EmployeePage')),
 // 		APPOINTMENT_LIST: lazy(() => import('../pages/presentation/appointment/AppointmentList')),
-// 	},
+ 	},
 // 	CRM: {
 // 		CRM_DASHBOARD: lazy(() => import('../pages/presentation/crm/CrmDashboard')),
 // 		CUSTOMERS: lazy(() => import('../pages/presentation/crm/CustomersList')),
@@ -68,7 +68,7 @@ const LANDING = {
 // 		WITH_LIST: lazy(() => import('../pages/presentation/chat/WithListChatPage')),
 // 		ONLY_LIST: lazy(() => import('../pages/presentation/chat/OnlyListChatPage')),
 // 	},
-//};
+};
 const PAGE_LAYOUTS = {
 	// HEADER_SUBHEADER: lazy(() => import('../pages/presentation/page-layouts/HeaderAndSubheader')),
 	// HEADER: lazy(() => import('../pages/presentation/page-layouts/OnlyHeader')),
@@ -364,11 +364,11 @@ const presentation = [
 	// /**
 	//  * App > Appointment
 	//  */
-	// {
-	// 	path: demoPages.appointment.subMenu.calendar.path,
-	// 	element: <APP.APPOINTMENT.CALENDAR />,
-	// 	exact: true,
-	// },
+	{
+		path: officeMenu.calendar.path,
+		element: <APP.APPOINTMENT.CALENDAR />,
+		exact: true,
+	},
 	// {
 	// 	path: demoPages.appointment.subMenu.employeeList.path,
 	// 	element: <APP.APPOINTMENT.EMPLOYEE_LIST />,

@@ -7,7 +7,7 @@ import Humans from '../../../assets/img/scene6.png';
 import HumansWebp from '../../../assets/img/scene6.webp';
 import CommonLayoutRightSubheader from '../../common/SubHeaders/CommonLayoutRightSubheader';
 import useMinimizeAside from '../../../hooks/useMinimizeAside';
-import { layoutMenu } from '../../../menu';
+//import { officeMenu } from '../../../menu';
 
 const MinimizeAsidePage = () => {
 	useMinimizeAside();

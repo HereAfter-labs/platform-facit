@@ -8,7 +8,7 @@ interface ILogoProps {
 const Logo: FC<ILogoProps> = ({ width, height }) => {
 	return (
 		<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
- width="300.000000pt" height="150.000000pt" viewBox="0 0 300.000000 150.000000"
+ width={width} height={height} viewBox="0 0 300.000000 150.000000"
  preserveAspectRatio="xMidYMid meet">
 
 	<g transform="translate(0.000000,150.000000) scale(0.100000,-0.100000)"
@@ -43,8 +43,8 @@ Logo.propTypes = {
 	height: PropTypes.number,
 };
 Logo.defaultProps = {
-	width: 2155,
-	height: 854,
+	width: 400,
+	height: 200,
 };
 
 export default Logo;

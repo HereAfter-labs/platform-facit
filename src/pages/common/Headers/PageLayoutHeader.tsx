@@ -1,7 +1,7 @@
 import React from 'react';
 import Header, { HeaderLeft } from '../../../layout/Header/Header';
 import Navigation from '../../../layout/Navigation/Navigation';
-import { layoutMenu } from '../../../menu';
+//import { layoutMenu } from '../../../menu';
 import useDeviceScreen from '../../../hooks/useDeviceScreen';
 import CommonHeaderRight from './CommonHeaderRight';
 

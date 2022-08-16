@@ -47,7 +47,7 @@ const CommonSalePerformance = () => {
 	};
 
 	function getDate(day: number) {
-		const arr = [];
+		const arr: string[] = [];
 		for (let i = 0; i < day; i += 1) {
 			arr.push(
 				moment()
@@ -58,7 +58,7 @@ const CommonSalePerformance = () => {
 		return arr.reverse();
 	}
 	function getHours(day: number) {
-		const arr = [];
+		const arr: number[] = [];
 		for (let i = 0; i < day; i += 1) {
 			arr.push(i);
 		}

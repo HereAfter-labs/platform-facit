@@ -77,9 +77,18 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 			return errors;
 		},
 		validateOnChange: false,
-		onSubmit: (values) => {
+		onSubmit: (values) => { 
+			// if (usernameCheck(values.loginUsername)) {
+			// 	if (setUser) {
+			// 			setUser(values.loginUsername);
+			// 		}
+			// 		handleOnClick();
+			// 	} else {
+			// 		loginformik.setFieldError('loginPassword', 'Username and password do not match.');
+			// 	}
+			// 
 			if (usernameCheck(values.loginUsername)) {
-				axios.post('https://api.hereafter.work/login',{
+				axios.post('https://api.heynova.work/login',{
 					email: values.loginUsername,
 					password: values.loginPassword
 				}).
@@ -149,7 +158,7 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 		},
 		validateOnChange: false,
 		onSubmit: (values) => {
-			axios.post('https://api.hereafter.work/signup',{
+			axios.post('https://api.heynova.work/signup',{
 			name: values.signUpName + ' ' + values.signUpSurname,
 			email: values.signUpEmail,
 			password: values.signUpPassword
@@ -181,7 +190,7 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 												'text-light': darkModeStatus,
 											},
 										)}>
-										<Logo width={200} />
+										<Logo />
 									</Link>
 								</div>
 								<div

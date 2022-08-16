@@ -1,9 +1,9 @@
 import React from 'react';
-import { demoPages, layoutMenu } from '../menu';
+import { demoPages, officeMenu } from '../menu';
 import Footer from '../layout/Footer/Footer';
 
 const footers = [
-	{ path: layoutMenu.blank.path, element: null, exact: true },
+	{ path: officeMenu.blank.path, element: null, exact: true },
 	{ path: demoPages.login.path, element: null, exact: true },
 	{ path: demoPages.signUp.path, element: null, exact: true },
 	//{ path: demoPages.page404.path, element: null, exact: true },

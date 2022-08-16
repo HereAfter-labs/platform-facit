@@ -168,7 +168,7 @@ const Checks = forwardRef<HTMLInputElement, IChecksProps>(
 				type={type === 'radio' ? 'radio' : 'checkbox'}
 				id={id}
 				value={value}
-				checked={type === 'radio' ? checked === value : checked}
+				checked={type === 'radio' ? checked === !!value : checked}
 				disabled={disabled}
 				onBlur={onBlur}
 				onChange={onChange}
