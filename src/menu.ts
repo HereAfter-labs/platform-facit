@@ -60,7 +60,7 @@ export const dashboardMenu = {
 	// },
 };
 
-export const demoPages = {
+export const pages = {
 	// pages: {
 	// 	id: 'pages',
 	// 	text: 'Pages',
@@ -389,32 +389,32 @@ export const demoPages = {
 			// },
 	// 	},
 	// },
-	// chat: {
-	// 	id: 'chat',
-	// 	text: 'Chat',
-	// 	path: 'chat',
-	// 	icon: 'Forum',
-	// 	subMenu: {
-	// 		withListChat: {
-	// 			id: 'withListChat',
-	// 			text: 'With List',
-	// 			path: 'chat/with-list',
-	// 			icon: 'Quickreply',
-	// 		},
-	// 		onlyListChat: {
-	// 			id: 'onlyListChat',
-	// 			text: 'Only List',
-	// 			path: 'chat/only-list',
-	// 			icon: 'Dns',
-	// 		},
-	// 	},
-	//},
 };
 
 export const officeMenu = {
 	layoutTypes: {
 		id: 'layoutTypes',
 		text: 'Office',
+	},
+	chat: {
+		id: 'chat',
+		text: 'Chat',
+		path: 'chat',
+		icon: 'Forum',
+		// subMenu: {
+		// 	withListChat: {
+		// 		id: 'withListChat',
+		// 		text: 'With List',
+		// 		path: 'chat/with-list',
+		// 		icon: 'Quickreply',
+		// 	},
+		// 	onlyListChat: {
+		// 		id: 'onlyListChat',
+		// 		text: 'Only List',
+		// 		path: 'chat/only-list',
+		// 		icon: 'Dns',
+		// 	},
+		// },
 	},
 	blank: {
 		id: 'blank',

@@ -12,7 +12,7 @@ import Avatar, { AvatarGroup } from '../../../components/Avatar';
 import USERS from '../../../common/data/userDummyData';
 import useDarkMode from '../../../hooks/useDarkMode';
 import { useNavigate } from 'react-router-dom';
-import { demoPages } from '../../../menu';
+import { pages } from '../../../menu';
 
 const CommonDashboardMarketingTeam = () => {
 	const { darkModeStatus } = useDarkMode();

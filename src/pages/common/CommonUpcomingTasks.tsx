@@ -27,31 +27,31 @@ import Input from '../../components/bootstrap/forms/Input';
 import Textarea from '../../components/bootstrap/forms/Textarea';
 import Checks from '../../components/bootstrap/forms/Checks';
 import Popovers from '../../components/bootstrap/Popovers';
-//import data from '../../common/data/dummyEventsData';
+import data from '../../common/data/dummyTasksData';
 import USERS from '../../common/data/userDummyData';
-//import EVENT_STATUS from '../../common/data/enumEventStatus';
+import EVENT_STATUS from '../../common/data/enumEventStatus';
 import Avatar from '../../components/Avatar';
 import PaginationButtons, { dataPagination, PER_COUNT } from '../../components/PaginationButtons';
 import useSortableData from '../../hooks/useSortableData';
 import useDarkMode from '../../hooks/useDarkMode';
 
-interface ICommonUpcomingEventsProps {
+interface ICommonUpcomingTasksProps {
 	isFluid?: boolean;
 }
-const CommonUpcomingEvents: FC<ICommonUpcomingEventsProps> = ({ isFluid }) => {
+const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 	const { themeStatus, darkModeStatus } = useDarkMode();
 
-	// BEGIN :: Upcoming Events
-	const [upcomingEventsInfoOffcanvas, setUpcomingEventsInfoOffcanvas] = useState(false);
+	// BEGIN :: Upcoming Tasks
+	const [upcomingTasksInfoOffcanvas, setUpcomingTasksInfoOffcanvas] = useState(false);
 	const handleUpcomingDetails = () => {
-		setUpcomingEventsInfoOffcanvas(!upcomingEventsInfoOffcanvas);
+		setUpcomingTasksInfoOffcanvas(!upcomingTasksInfoOffcanvas);
 	};
 
-	const [upcomingEventsEditOffcanvas, setUpcomingEventsEditOffcanvas] = useState(false);
+	const [upcomingTasksEditOffcanvas, setUpcomingTasksEditOffcanvas] = useState(false);
 	const handleUpcomingEdit = () => {
-		setUpcomingEventsEditOffcanvas(!upcomingEventsEditOffcanvas);
+		setUpcomingTasksEditOffcanvas(!upcomingTasksEditOffcanvas);
 	};
-	// END :: Upcoming Events
+	// END :: Upcoming Tasks
 
 	const formik = useFormik({
 		onSubmit<Values>(
@@ -61,20 +61,22 @@ const CommonUpcomingEvents: FC<ICommonUpcomingEventsProps> = ({ isFluid }) => {
 			return undefined;
 		},
 		initialValues: {
-			customerName: 'Alison Berry',
-			service: 'Exercise Bike',
-			employee: `${USERS.GRACE.name} ${USERS.GRACE.surname}`,
-			location: 'Maryland',
-			date: moment().add(1, 'days').format('YYYY-MM-DD'),
-			time: '10:30',
-			note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut nisi odio. Nam sit amet pharetra enim. Nulla facilisi. Nunc dictum felis id massa mattis pretium. Mauris at blandit orci. Nunc vulputate vulputate turpis vitae cursus. In sit amet turpis tincidunt, interdum ex vitae, sollicitudin massa. Maecenas eget dui molestie, ullamcorper ante vel, tincidunt nisi. Donec vitae pulvinar risus. In ultricies nisl ac massa malesuada, vel tempus neque placerat.',
+			//customerName: 'Alison Berry',
+			//service: 'Exercise Bike',
+			//employee: `${USERS.GRACE.name} ${USERS.GRACE.surname}`,
+			//location: 'Maryland',
+			//status: EVENT_STATUS.PENDING,
+			duedate: moment().add(1, 'days').format('YYYY-MM-DD'),
+			taskname: 'ABC',
+			//time: '10:30',
+			//note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut nisi odio. Nam sit amet pharetra enim. Nulla facilisi. Nunc dictum felis id massa mattis pretium. Mauris at blandit orci. Nunc vulputate vulputate turpis vitae cursus. In sit amet turpis tincidunt, interdum ex vitae, sollicitudin massa. Maecenas eget dui molestie, ullamcorper ante vel, tincidunt nisi. Donec vitae pulvinar risus. In ultricies nisl ac massa malesuada, vel tempus neque placerat.',
 			notify: true,
 		},
 	});
 
 	const [currentPage, setCurrentPage] = useState(1);
 	const [perPage, setPerPage] = useState(PER_COUNT['5']);
-	//const { items, requestSort, getClassNamesFor } = useSortableData(data);
+	const { items, requestSort, getClassNamesFor } = useSortableData(data);
 
 	return (
 		<>
@@ -101,7 +103,7 @@ const CommonUpcomingEvents: FC<ICommonUpcomingEventsProps> = ({ isFluid }) => {
 						<thead>
 							<tr>
 								<td style={{ width: 60 }} />
-								{/* <th
+								<th
 									onClick={() => requestSort('date')}
 									className='cursor-pointer text-decoration-underline'>
 									Date / Time{' '}
@@ -110,17 +112,14 @@ const CommonUpcomingEvents: FC<ICommonUpcomingEventsProps> = ({ isFluid }) => {
 										className={getClassNamesFor('date')}
 										icon='FilterList'
 									/>
-								</th> */}
-								<th>Customer</th>
-								<th>Assigned to</th>
-								<th>Service</th>
-								<th>Duration</th>
-								<th>Payment</th>
+								</th>
 								<th>Status</th>
+								<th>Task Name</th>
+								<th>Due Date</th>
 								<td />
 							</tr>
 						</thead>
-						{/* <tbody>
+						<tbody>
 							{dataPagination(items, currentPage, perPage).map((item) => (
 								<tr key={item.id}>
 									<td>
@@ -153,20 +152,20 @@ const CommonUpcomingEvents: FC<ICommonUpcomingEventsProps> = ({ isFluid }) => {
 												</span>
 											</span>
 											<span className='text-nowrap'>
-												{moment(`${item.date} ${item.time}`).format(
-													'MMM Do YYYY, h:mm a',
+												{moment(`${item.duedate}`).format(
+													'MMM Do YYYY, a',
 												)}
 											</span>
 										</div>
 									</td>
-									<td>
+									{/* <td>
 										<div>
 											<div>{item.customer.name}</div>
 											<div className='small text-muted'>
 												{item.customer.email}
 											</div>
 										</div>
-									</td>
+									</td> */}
 									<td>
 										<div className='d-flex'>
 											<div className='flex-shrink-0'>
@@ -182,9 +181,9 @@ const CommonUpcomingEvents: FC<ICommonUpcomingEventsProps> = ({ isFluid }) => {
 											</div>
 										</div>
 									</td>
-									<td>{item.service.name}</td>
-									<td>{item.duration}</td>
-									<td>{item.payment && priceFormat(item.payment)}</td>
+									{/* <td>{item.service.name}</td>
+									<td>{item.duration}</td> 
+									<td>{item.payment && priceFormat(item.payment)}</td>*/}
 									<td>
 										<Dropdown>
 											<DropdownToggle hasIcon={false}>
@@ -197,7 +196,7 @@ const CommonUpcomingEvents: FC<ICommonUpcomingEventsProps> = ({ isFluid }) => {
 												</Button>
 											</DropdownToggle>
 											<DropdownMenu>
-												{ {Object.keys(EVENT_STATUS).map((key) => (
+												{Object.keys(EVENT_STATUS).map((key) => (
 													<DropdownItem key={key}>
 														<div>
 															<Icon
@@ -207,7 +206,7 @@ const CommonUpcomingEvents: FC<ICommonUpcomingEventsProps> = ({ isFluid }) => {
 															{EVENT_STATUS[key].name}
 														</div>
 													</DropdownItem>
-												))} }
+												))}
 											</DropdownMenu>
 										</Dropdown>
 									</td>
@@ -226,25 +225,25 @@ const CommonUpcomingEvents: FC<ICommonUpcomingEventsProps> = ({ isFluid }) => {
 									</td>
 								</tr>
 							))}
-										</tbody>  */}
+						</tbody>
 					</table>
 				</CardBody>
-				{/* <PaginationButtons
+				<PaginationButtons
 					data={items}
 					label='items'
 					setCurrentPage={setCurrentPage}
 					currentPage={currentPage}
 					perPage={perPage}
 					setPerPage={setPerPage}
-				/> */}
+				/>
 			</Card>
 
 			<OffCanvas
-				setOpen={setUpcomingEventsInfoOffcanvas}
-				isOpen={upcomingEventsInfoOffcanvas}
+				setOpen={setUpcomingTasksInfoOffcanvas}
+				isOpen={upcomingTasksInfoOffcanvas}
 				titleId='upcomingDetails'
 				placement='bottom'>
-				<OffCanvasHeader setOpen={setUpcomingEventsInfoOffcanvas}>
+				<OffCanvasHeader setOpen={setUpcomingTasksInfoOffcanvas}>
 					<OffCanvasTitle id='upcomingDetails'>Customer: Alison Berry</OffCanvasTitle>
 				</OffCanvasHeader>
 				<OffCanvasBody>
@@ -260,18 +259,15 @@ const CommonUpcomingEvents: FC<ICommonUpcomingEventsProps> = ({ isFluid }) => {
 								<Input
 									value={moment(
 										// @ts-ignore
-										`${data.find((e) => e.id === 1).date} ${
-											// @ts-ignore
-											data.find((e) => e.id === 1).time
-										}`,
-									).format('MMM Do YYYY, h:mm a')}
+										`${data.find((e) => e.id === 1).duedate} `,
+									).format('MMM Do YYYY, a')}
 									readOnly
 									disabled
 								/>
 							</FormGroup>
 						</div>
 						<div className='w-100' />
-						<div className='col-lg-6'>
+						{/* <div className='col-lg-6'>
 							<FormGroup
 								id='noteInfo'
 								name='note'
@@ -281,64 +277,73 @@ const CommonUpcomingEvents: FC<ICommonUpcomingEventsProps> = ({ isFluid }) => {
 								childWrapperClassName='col-sm-10'>
 								<Textarea value={formik.values.note} readOnly disabled />
 							</FormGroup>
-						</div>
+						</div> */}
 					</div>
 				</OffCanvasBody>
 			</OffCanvas>
 
 			<OffCanvas
-				setOpen={setUpcomingEventsEditOffcanvas}
-				isOpen={upcomingEventsEditOffcanvas}
+				setOpen={setUpcomingTasksEditOffcanvas}
+				isOpen={upcomingTasksEditOffcanvas}
 				titleId='upcomingEdit'
 				isBodyScroll
 				placement='end'>
-				<OffCanvasHeader setOpen={setUpcomingEventsEditOffcanvas}>
+				<OffCanvasHeader setOpen={setUpcomingTasksEditOffcanvas}>
 					<OffCanvasTitle id='upcomingEdit'>Edit Appointments</OffCanvasTitle>
 				</OffCanvasHeader>
 				<OffCanvasBody>
 					<div className='row g-4'>
-						<div className='col-12'>
+						{/* <div className='col-6'>
+								<FormGroup id='status' label='Status'>
+									<Input
+										onChange={formik.handleChange}
+										value={formik.values.status}
+										type='date'
+									/>
+								</FormGroup>
+							</div> */}
+						{/* <div className='col-12'>
 							<FormGroup id='customerName' label='Customer'>
 								<Input
 									onChange={formik.handleChange}
 									value={formik.values.customerName}
 								/>
 							</FormGroup>
-						</div>
-						<div className='col-12'>
+						</div> */}
+						{/* <div className='col-12'>
 							<FormGroup id='service' label='Service'>
 								<Input
 									onChange={formik.handleChange}
 									value={formik.values.service}
 								/>
 							</FormGroup>
-						</div>
+						</div> */}
 						<div className='col-12'>
-							<FormGroup id='employee' label='Employee'>
+							<FormGroup id='taskname' label='Task Name'>
 								<Input
 									onChange={formik.handleChange}
-									value={formik.values.employee}
+									value={formik.values.taskname}
 								/>
 							</FormGroup>
 						</div>
-						<div className='col-12'>
+						{/* <div className='col-12'>
 							<FormGroup id='location' label='Location'>
 								<Input
 									onChange={formik.handleChange}
 									value={formik.values.location}
 								/>
 							</FormGroup>
-						</div>
+						</div> */}
 						<div className='col-6'>
-							<FormGroup id='date' label='Date'>
+							<FormGroup id='duedate' label='Due Date'>
 								<Input
 									onChange={formik.handleChange}
-									value={formik.values.date}
+									value={formik.values.duedate}
 									type='date'
 								/>
 							</FormGroup>
 						</div>
-						<div className='col-6'>
+						{/* <div className='col-6'>
 							<FormGroup id='time' label='time'>
 								<Input
 									onChange={formik.handleChange}
@@ -346,8 +351,8 @@ const CommonUpcomingEvents: FC<ICommonUpcomingEventsProps> = ({ isFluid }) => {
 									type='time'
 								/>
 							</FormGroup>
-						</div>
-						<div className='col-12'>
+						</div> */}
+						{/* <div className='col-12'>
 							<Card isCompact borderSize={2} shadow='none' className='mb-0'>
 								<CardHeader>
 									<CardLabel>
@@ -363,7 +368,7 @@ const CommonUpcomingEvents: FC<ICommonUpcomingEventsProps> = ({ isFluid }) => {
 									</FormGroup>
 								</CardBody>
 							</Card>
-						</div>
+						</div> */}
 						<div className='col-12'>
 							<Card isCompact borderSize={2} shadow='none' className='mb-0'>
 								<CardHeader>
@@ -404,7 +409,7 @@ const CommonUpcomingEvents: FC<ICommonUpcomingEventsProps> = ({ isFluid }) => {
 						<Button
 							color='info'
 							className='w-100'
-							onClick={() => setUpcomingEventsEditOffcanvas(false)}>
+							onClick={() => setUpcomingTasksEditOffcanvas(false)}>
 							Save
 						</Button>
 					</div>
@@ -414,4 +419,4 @@ const CommonUpcomingEvents: FC<ICommonUpcomingEventsProps> = ({ isFluid }) => {
 	);
 };
 
-export default CommonUpcomingEvents;
+export default CommonUpcomingTasks;

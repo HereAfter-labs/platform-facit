@@ -15,7 +15,7 @@ import Label from '../../../components/bootstrap/forms/Label';
 import Input from '../../../components/bootstrap/forms/Input';
 import Checks, { ChecksGroup } from '../../../components/bootstrap/forms/Checks';
 import SERVICES from '../../../common/data/serviceDummyData';
-import { demoPages } from '../../../menu';
+import { pages } from '../../../menu';
 import useTourStep from '../../../hooks/useTourStep';
 
 const EmployeeList = () => {

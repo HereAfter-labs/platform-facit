@@ -11,7 +11,7 @@ import Card, {
 import Button from '../../../components/bootstrap/Button';
 import { priceFormat } from '../../../helpers/helpers';
 import useDarkMode from '../../../hooks/useDarkMode';
-import { demoPages } from '../../../menu';
+import { pages } from '../../../menu';
 
 type TStatus = 'Paid' | 'Pending' | 'Failed';
 interface ITransactionsItemProps {

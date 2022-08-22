@@ -10,7 +10,7 @@ import ThemeContext from '../contexts/themeContext';
 import Aside from '../layout/Aside/Aside';
 import Wrapper from '../layout/Wrapper/Wrapper';
 import Portal from '../layout/Portal/Portal';
-import { demoPages, officeMenu } from '../menu';
+import { pages, officeMenu } from '../menu';
 import { Toast, ToastContainer } from '../components/bootstrap/Toasts';
 import useDarkMode from '../hooks/useDarkMode';
 import COLORS from '../common/data/enumColors';
@@ -67,7 +67,7 @@ const App = () => {
 	});
 
 	//	Add paths to the array that you don't want to be "Aside".
-	const withOutAsidePages = [demoPages.login.path, demoPages.signUp.path, officeMenu.blank.path];
+	const withOutAsidePages = [pages.login.path, pages.signUp.path, officeMenu.blank.path];
 
 	return (
 		<ThemeProvider theme={theme}>

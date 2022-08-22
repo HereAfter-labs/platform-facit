@@ -19,7 +19,7 @@ import { TColor } from '../../../type/color';
 import Chart, { IChartOptions } from '../../../components/extras/Chart';
 import Avatar from '../../../components/Avatar';
 import { Link } from 'react-router-dom';
-import { demoPages } from '../../../menu';
+import { pages } from '../../../menu';
 import classNames from 'classnames';
 import Popovers from '../../../components/bootstrap/Popovers';
 

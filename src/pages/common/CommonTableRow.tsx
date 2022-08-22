@@ -5,7 +5,7 @@ import Checks from '../../components/bootstrap/forms/Checks';
 import Chart from '../../components/extras/Chart';
 import Badge from '../../components/bootstrap/Badge';
 import Button from '../../components/bootstrap/Button';
-import { demoPages } from '../../menu';
+import { pages } from '../../menu';
 import useDarkMode from '../../hooks/useDarkMode';
 import { ApexOptions } from 'apexcharts';
 

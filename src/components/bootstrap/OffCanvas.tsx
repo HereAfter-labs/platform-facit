@@ -194,12 +194,12 @@ const OffCanvas: FC<IOffCanvasProps> = ({
 		(initialProps.placement === 'top' && { y: '-100%' }) ||
 		(initialProps.placement === 'bottom' && { y: '100%' }) || { x: '100%' };
 
-	//@ts-ignore
+	// @ts-ignore
 	const MotionTagWrapper = motion[Tag];
 
 	return (
 		<Portal>
-			{/* <AnimatePresence exitBeforeEnter>
+			<AnimatePresence exitBeforeEnter>
 				{isOpen && (
 					<>
 						<MotionTagWrapper
@@ -225,10 +225,10 @@ const OffCanvas: FC<IOffCanvasProps> = ({
 							aria-labelledby={titleId}
 							data-bs-scroll={initialProps.isBodyScroll}
 							data-bs-backdrop={initialProps.isBackdrop}
-							//style={{ visibility: isOpen && 'visible' }}
 							style={{ visibility: isOpen ? 'visible' : 'hidden' }}
 							// eslint-disable-next-line react/jsx-props-no-spreading
-							{...props}>
+							//{...props}
+							>
 							{children}
 						</MotionTagWrapper>
 						{initialProps.isBackdrop && (
@@ -236,7 +236,7 @@ const OffCanvas: FC<IOffCanvasProps> = ({
 						)}
 					</>
 				)}
-			</AnimatePresence> */}
+			</AnimatePresence>
 		</Portal>
 	);
 };

@@ -15,6 +15,7 @@ import AuthContext from '../../../contexts/authContext';
 import USERS, { getUserDataWithUsername } from '../../../common/data/userDummyData';
 import Spinner from '../../../components/bootstrap/Spinner';
 import Alert from '../../../components/bootstrap/Alert';
+import validator from 'validator';
 import axios from 'axios';
 
 interface ILoginHeaderProps {
@@ -56,7 +57,6 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 		return true;
 	};
 
-
 	const loginformik = useFormik({
 		enableReinitialize: true,
 		initialValues: {
@@ -78,15 +78,6 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 		},
 		validateOnChange: false,
 		onSubmit: (values) => { 
-			// if (usernameCheck(values.loginUsername)) {
-			// 	if (setUser) {
-			// 			setUser(values.loginUsername);
-			// 		}
-			// 		handleOnClick();
-			// 	} else {
-			// 		loginformik.setFieldError('loginPassword', 'Username and password do not match.');
-			// 	}
-			// 
 			if (usernameCheck(values.loginUsername)) {
 				axios.post('https://api.heynova.work/login',{
 					email: values.loginUsername,
@@ -153,6 +144,15 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 			if (!values.signUpPassword) {
 				errors.signUpPassword = 'Required';
 			}
+			else
+			{
+				if (!validator.isStrongPassword(values.signUpPassword, {
+					minLength: 8, minLowercase: 1,
+					minUppercase: 1, minNumbers: 1, minSymbols: 1
+				  })) {
+					errors.signUpPassword = 'Your password must have at least one uppercase letter, one number and one symbol!';
+				  } 
+			}
 
 			return errors;
 		},
@@ -164,9 +164,13 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 			password: values.signUpPassword
 		  }).
 			then(response => {
-				console.log(response);
-			}).catch(error => {console.log(error);});
-			//return getUserDataWithUsername(username).password === password;
+			if(response.status == 200)
+					{
+					setSignInPassword(false);
+					setSignUpStatus(!signUpStatus);
+					}
+			})
+			.catch(error => {console.log(error);});
 		},
 	});
 
@@ -245,61 +249,75 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 										<>
 											<div className='col-12'>
 												<FormGroup
-													id='signup-email'
+													id='signUpEmail'
 													isFloating
 													label='Your email'>
 													<Input
-														autoComplete='email'
+													    type='text'
 														value={signUpformik.values.signUpEmail}
 														isTouched={signUpformik.touched.signUpEmail}
 														invalidFeedback={
 															signUpformik.errors.signUpEmail
 														}
-														validFeedback='Looks good!'
 														isValid={signUpformik.isValid}
+														onChange={signUpformik.handleChange}
 														onBlur={signUpformik.handleBlur}
+														onFocus={() => {
+															signUpformik.setErrors({});
+														}}
 													/>
 												</FormGroup>
 											</div>
 											<div className='col-12'>
-												<FormGroup
-													id='signup-name'
+											<FormGroup
+													id='signUpName'
 													isFloating
-													label='Your name'>
-												    <Input
-														autoComplete='current-password'
+													label=' Your name'
+													className={classNames({
+														'd-none': signInPassword,
+													})}
+													>
+													<Input
 														value={signUpformik.values.signUpName}
 														isTouched={signUpformik.touched.signUpName}
 														invalidFeedback={
 															signUpformik.errors.signUpName
 														}
-														validFeedback='Looks good!'
 														isValid={signUpformik.isValid}
+														onChange={signUpformik.handleChange}
 														onBlur={signUpformik.handleBlur}
+														onFocus={() => {
+															signUpformik.setErrors({});
+														}}
 													/>
 												</FormGroup>
-											</div>
-											<div className='col-12'>
+												</div>
+												<div className='col-12'>
 												<FormGroup
-													id='signup-surname'
+													id='signUpSurname'
 													isFloating
-													label='Your surname'>
+													label=' Your surname'
+													className={classNames({
+														'd-none': signInPassword,
+													})}>
 													<Input
-														autoComplete='current-password'
 														value={signUpformik.values.signUpSurname}
 														isTouched={signUpformik.touched.signUpSurname}
 														invalidFeedback={
 															signUpformik.errors.signUpSurname
 														}
-														validFeedback='Looks good!'
 														isValid={signUpformik.isValid}
+														onChange={signUpformik.handleChange}
 														onBlur={signUpformik.handleBlur}
+														onFocus={() => {
+															signUpformik.setErrors({});
+														}}
 													/>
 												</FormGroup>
-											</div>
+												</div>
 											<div className='col-12'>
 												<FormGroup
-													id='signup-password'
+													id='signUpPassword'
 													isFloating
 													label='Password'>
 													<Input
@@ -312,6 +330,7 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 														}
 														validFeedback='Looks good!'
 														isValid={signUpformik.isValid}
+														onChange={signUpformik.handleChange}
 														onBlur={signUpformik.handleBlur}
 													/>
 												</FormGroup>

@@ -5,8 +5,8 @@ import Icon from '../../../components/icon/Icon';
 import Page from '../../../layout/Page/Page';
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper';
 import Button from '../../../components/bootstrap/Button';
-import { demoPages } from '../../../menu';
-import CommonUpcomingEvents from '../../common/CommonUpcomingEvents';
+import { pages } from '../../../menu';
+import CommonUpcomingEvents from '../../common/CommonUpcomingTasks';
 import useDarkMode from '../../../hooks/useDarkMode';
 
 const AppointmentList = () => {

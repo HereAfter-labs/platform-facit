@@ -11,7 +11,7 @@ import Button from '../../../components/bootstrap/Button';
 import Avatar, { AvatarGroup } from '../../../components/Avatar';
 import USERS from '../../../common/data/userDummyData';
 import { useNavigate } from 'react-router-dom';
-import { demoPages } from '../../../menu';
+import { pages } from '../../../menu';
 import useDarkMode from '../../../hooks/useDarkMode';
 
 const CommonDashboardDesignTeam = () => {

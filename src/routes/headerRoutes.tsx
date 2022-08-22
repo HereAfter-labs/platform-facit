@@ -1,5 +1,5 @@
 import React from 'react';
-import { dashboardMenu, demoPages } from '../menu';
+import { dashboardMenu, pages } from '../menu';
 import DashboardHeader from '../pages/common/Headers/DashboardHeader';
 import DashboardBookingHeader from '../pages/common/Headers/DashboardBookingHeader';
 import ProfilePageHeader from '../pages/common/Headers/ProfilePageHeader';
@@ -19,8 +19,8 @@ const headers = [
 	// { path: layoutMenu.pageLayout.subMenu.onlySubheader.path, element: null, exact: true },
 	// { path: layoutMenu.pageLayout.subMenu.onlyContent.path, element: null, exact: true },
 	// { path: layoutMenu.blank.path, element: null, exact: true },
-	{ path: demoPages.login.path, element: null, exact: true },
-	{ path: demoPages.signUp.path, element: null, exact: true },
+	{ path: pages.login.path, element: null, exact: true },
+	{ path: pages.signUp.path, element: null, exact: true },
 	//{ path: demoPages.page404.path, element: null, exact: true },
 	//{ path: demoPages.knowledge.subMenu.grid.path, element: null, exact: true },
 	{ path: dashboardMenu.dashboard.path, element: <DashboardHeader />, exact: true },

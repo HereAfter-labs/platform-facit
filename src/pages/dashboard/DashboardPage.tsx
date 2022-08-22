@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTour } from '@reactour/tour';
 import useDarkMode from '../../hooks/useDarkMode';
-import { demoPages } from '../../menu';
+import { pages } from '../../menu';
 import PageWrapper from '../../layout/PageWrapper/PageWrapper';
 import SubHeader, {
 	SubHeaderLeft,

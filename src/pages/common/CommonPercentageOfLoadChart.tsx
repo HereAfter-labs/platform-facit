@@ -11,7 +11,7 @@ import Card, {
 } from '../../components/bootstrap/Card';
 import Icon from '../../components/icon/Icon';
 import Button from '../../components/bootstrap/Button';
-import { demoPages } from '../../menu';
+import { pages } from '../../menu';
 import Chart, { IChartOptions } from '../../components/extras/Chart';
 import useDarkMode from '../../hooks/useDarkMode';
 

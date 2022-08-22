@@ -11,7 +11,7 @@ import Button from '../../../components/bootstrap/Button';
 //import topSalesData from '../../../common/data/dummySalesData';
 import { getFirstLetter, priceFormat } from '../../../helpers/helpers';
 import useDarkMode from '../../../hooks/useDarkMode';
-import { demoPages } from '../../../menu';
+import { pages } from '../../../menu';
 
 interface ITopSalesItemProps {
 	name: string;

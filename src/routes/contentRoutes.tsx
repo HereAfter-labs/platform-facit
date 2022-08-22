@@ -1,5 +1,5 @@
 import React, { lazy } from 'react';
-import { dashboardMenu, demoPages, officeMenu } from '../menu';
+import { dashboardMenu, pages, officeMenu } from '../menu';
 import Login from '../pages/presentation/auth/Login';
 
 const LANDING = {
@@ -64,10 +64,10 @@ const APP = {
 // 		CUSTOMERS: lazy(() => import('../pages/presentation/crm/CustomersList')),
 // 		CUSTOMER: lazy(() => import('../pages/presentation/crm/Customer')),
 // 	},
-// 	CHAT: {
-// 		WITH_LIST: lazy(() => import('../pages/presentation/chat/WithListChatPage')),
-// 		ONLY_LIST: lazy(() => import('../pages/presentation/chat/OnlyListChatPage')),
-// 	},
+	CHAT: {
+		WITH_LIST: lazy(() => import('../pages/presentation/chat/WithListChatPage')),
+		//ONLY_LIST: lazy(() => import('../pages/presentation/chat/OnlyListChatPage')),
+	},
 };
 const PAGE_LAYOUTS = {
 	// HEADER_SUBHEADER: lazy(() => import('../pages/presentation/page-layouts/HeaderAndSubheader')),
@@ -295,12 +295,12 @@ const presentation = [
 	// 	exact: true,
 	// },
 	{
-		path: demoPages.login.path,
+		path: pages.login.path,
 		element: <Login />,
 		exact: true,
 	},
 	{
-		path: demoPages.signUp.path,
+		path: pages.signUp.path,
 		element: <Login isSignUp />,
 		exact: true,
 	},
@@ -380,7 +380,7 @@ const presentation = [
 	// 	exact: true,
 	// },
 	// {
-	// 	path: demoPages.appointment.subMenu.appointmentList.path,
+	// 	path: officeMenu.calendar.appointmentList.path,
 	// 	element: <APP.APPOINTMENT.APPOINTMENT_LIST />,
 	// 	exact: true,
 	// },
@@ -407,16 +407,11 @@ const presentation = [
 	// /**
 	//  * App > Chat
 	//  */
-	// {
-	// 	path: demoPages.chat.subMenu.withListChat.path,
-	// 	element: <APP.CHAT.WITH_LIST />,
-	// 	exact: true,
-	// },
-	// {
-	// 	path: demoPages.chat.subMenu.onlyListChat.path,
-	// 	element: <APP.CHAT.ONLY_LIST />,
-	// 	exact: true,
-	// },
+	{
+	 	path: officeMenu.chat.path,
+		element: <APP.CHAT.WITH_LIST />,
+	 	exact: true,
+	},
 
 	/**
 	 * END - App

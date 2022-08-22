@@ -19,7 +19,7 @@ import Badge from '../../components/bootstrap/Badge';
 import { priceFormat } from '../../helpers/helpers';
 import showNotification from '../../components/extras/showNotification';
 import Icon from '../../components/icon/Icon';
-import { demoPages } from '../../menu';
+import { pages } from '../../menu';
 import useDarkMode from '../../hooks/useDarkMode';
 import { ApexOptions } from 'apexcharts';
 
