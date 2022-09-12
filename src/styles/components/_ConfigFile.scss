@@ -5,9 +5,12 @@
 //  Aside Config
 $aside: (
 	mobile-breakpoint: md,
-	width: 15rem,
+	width: 17rem,
 	// Don't forget to make changes to the .env file as well.
-	background-color: shade-color($primary, 95),
+	//background-color: shade-color($primary, 95),
+	background-color: $primary,
+	blur: 0.3rem,
+	opacity: 0.6,
 	border-size: 0,
 	border-color: shade-color($primary, 95),
 	minimize: (

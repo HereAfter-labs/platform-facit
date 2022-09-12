@@ -1,5 +1,5 @@
 import moment from 'moment';
-import USERS from '../../../common/data/userDummyData';
+import USERS from '../../../contexts/UserData';
 
 const now = new Date();
 

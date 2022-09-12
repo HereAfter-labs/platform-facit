@@ -85,7 +85,6 @@ interface IChatListItemProps extends HTMLAttributes<HTMLDivElement> {
 	color?: TColor | 'link' | 'brand' | 'brand-two' | 'storybook';
 	size?: number;
 	name: string;
-	surname: string;
 	latestMessage?: string;
 	unreadMessage?: number;
 	isActive?: boolean;
@@ -99,7 +98,6 @@ export const ChatListItem: FC<IChatListItemProps> = ({
 	color,
 	size,
 	name,
-	surname,
 	latestMessage,
 	unreadMessage,
 	isActive,
@@ -134,7 +132,7 @@ export const ChatListItem: FC<IChatListItemProps> = ({
 				/>
 				<div className='d-grid'>
 					<div className='d-flex flex-wrap d-xxl-block'>
-						<span className='fw-bold fs-5 me-3'>{`${name} ${surname}`}</span>
+						<span className='fw-bold fs-5 me-3'>{`${name}`}</span>
 						{lastSeenTime && (
 							<small
 								className={classNames(
@@ -175,7 +173,6 @@ ChatListItem.propTypes = {
 	]),
 	size: PropTypes.number,
 	name: PropTypes.string.isRequired,
-	surname: PropTypes.string.isRequired,
 	latestMessage: PropTypes.string,
 	unreadMessage: PropTypes.number,
 	isActive: PropTypes.bool,
@@ -256,7 +253,6 @@ interface IChatGroupProps extends HTMLAttributes<HTMLDivElement> {
 		srcSet?: string;
 		username?: string;
 		name?: string;
-		surname?: string;
 		isOnline?: boolean;
 		color?: TColor | 'link' | 'brand' | 'brand-two' | 'storybook';
 	};
@@ -316,7 +312,6 @@ ChatGroup.propTypes = {
 		srcSet: PropTypes.string,
 		username: PropTypes.string,
 		name: PropTypes.string,
-		surname: PropTypes.string,
 		isOnline: PropTypes.bool,
 		color: PropTypes.oneOf([
 			'primary',

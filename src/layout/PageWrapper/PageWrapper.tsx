@@ -30,11 +30,11 @@ const PageWrapper = forwardRef<HTMLDivElement, IPageWrapperProps>(
 				.setAttribute('content', description || process.env.REACT_APP_META_DESC || '');
 		});
 
-		const { user } = useContext(AuthContext);
+		const { uid } = useContext(AuthContext);
 
 		const navigate = useNavigate();
 		useEffect(() => {
-			if (isProtected && user === '') {
+			if (isProtected && uid === '') {
 				navigate(`../${pages.login.path}`);
 			}
 			return () => {};

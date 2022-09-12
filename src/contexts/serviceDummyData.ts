@@ -1,4 +1,4 @@
-import { TColor } from '../../type/color';
+import { TColor } from '../type/color';
 
 export interface IServiceProps {
 	name: string;

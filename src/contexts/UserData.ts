@@ -1,44 +1,45 @@
-import UserImage from '../../assets/img/wanna/wanna1.png';
-import UserImageWebp from '../../assets/img/wanna/wanna1.webp';
-import UserImage2 from '../../assets/img/wanna/wanna2.png';
-import UserImage2Webp from '../../assets/img/wanna/wanna2.webp';
-import UserImage3 from '../../assets/img/wanna/wanna3.png';
-import UserImage3Webp from '../../assets/img/wanna/wanna3.webp';
-import UserImage4 from '../../assets/img/wanna/wanna4.png';
-import UserImage4Webp from '../../assets/img/wanna/wanna4.webp';
-import UserImage5 from '../../assets/img/wanna/wanna5.png';
-import UserImage5Webp from '../../assets/img/wanna/wanna5.webp';
-import UserImage6 from '../../assets/img/wanna/wanna6.png';
-import UserImage6Webp from '../../assets/img/wanna/wanna6.webp';
-import UserImage7 from '../../assets/img/wanna/wanna7.png';
-import UserImage7Webp from '../../assets/img/wanna/wanna7.webp';
-import SERVICES, { IServiceProps } from '../../contexts/serviceDummyData';
+import UserImage from '../assets/img/wanna/wanna1.png';
+import UserImageWebp from '../assets/img/wanna/wanna1.webp';
+import UserImage2 from '../assets/img/wanna/wanna2.png';
+import UserImage2Webp from '../assets/img/wanna/wanna2.webp';
+import UserImage3 from '../assets/img/wanna/wanna3.png';
+import UserImage3Webp from '../assets/img/wanna/wanna3.webp';
+import UserImage4 from '../assets/img/wanna/wanna4.png';
+import UserImage4Webp from '../assets/img/wanna/wanna4.webp';
+import UserImage5 from '../assets/img/wanna/wanna5.png';
+import UserImage5Webp from '../assets/img/wanna/wanna5.webp';
+import UserImage6 from '../assets/img/wanna/wanna6.png';
+import UserImage6Webp from '../assets/img/wanna/wanna6.webp';
+import UserImage7 from '../assets/img/wanna/wanna7.png';
+import UserImage7Webp from '../assets/img/wanna/wanna7.webp';
+import SERVICES, { IServiceProps } from './serviceDummyData';
 
-import User7Landing from '../../assets/img/wanna/landing1.png';
-import { TColor } from '../../type/color';
+import User7Landing from '../assets/img/wanna/landing1.png';
+import { TColor } from '../type/color';
+import axios from 'axios';
+import { useCallback } from 'react';
+
 
 export interface IUserProps {
-	id: string;
-	username: string;
+	uid: string;
+	username?: string;
 	name: string;
-	surname: string;
-	position: string;
+	position?: string;
 	email?: string;
-	src: string;
-	srcSet: string;
-	isOnline: boolean;
-	isReply?: boolean;
-	color: TColor;
-	fullImage?: string;
-	services?: IServiceProps[];
-	password: string;
+	src?: string | undefined;
+	srcSet?: string | undefined;
+	isOnline: boolean | undefined;
+	isReply?: boolean | undefined;
+	color?: TColor | undefined;
+	fullImage?: string | undefined;
+	services?: IServiceProps[] | undefined;
+	password?: string | undefined;
 }
 
 const john: IUserProps = {
-	id: '1',
+	uid: '1',
 	username: 'john',
-	name: 'John',
-	surname: 'Doe',
+	name: 'John Doe',
 	position: 'CEO, Founder',
 	email: 'john@omtanke.studio',
 	src: UserImage,
@@ -51,10 +52,9 @@ const john: IUserProps = {
 };
 
 const grace: IUserProps = {
-	id: '2',
+	uid: '2',
 	username: 'grace',
-	name: 'Grace',
-	surname: 'Buckland',
+	name: 'Grace Buckland',
 	position: 'Staff',
 	email: 'grace@omtanke.studio',
 	src: UserImage2,
@@ -66,10 +66,9 @@ const grace: IUserProps = {
 };
 
 const jane: IUserProps = {
-	id: '3',
+	uid: '3',
 	username: 'jane',
-	name: 'Jane',
-	surname: 'Lee',
+	name: 'Jane Lee',
 	position: 'Staff',
 	email: 'jane@omtanke.studio',
 	src: UserImage3,
@@ -81,10 +80,9 @@ const jane: IUserProps = {
 };
 
 const ryan: IUserProps = {
-	id: '4',
+	uid: '4',
 	username: 'ryan',
-	name: 'Ryan',
-	surname: 'McGrath',
+	name: 'Ryan McGrath',
 	position: 'Worker',
 	email: 'ryan@omtanke.studio',
 	src: UserImage4,
@@ -96,10 +94,9 @@ const ryan: IUserProps = {
 };
 
 const ella: IUserProps = {
-	id: '5',
+	uid: '5',
 	username: 'ella',
-	name: 'Ella',
-	surname: 'Oliver',
+	name: 'Ella Oliver',
 	position: 'Worker',
 	email: 'ella@omtanke.studio',
 	src: UserImage5,
@@ -111,10 +108,9 @@ const ella: IUserProps = {
 };
 
 const chloe: IUserProps = {
-	id: '6',
+	uid: '6',
 	username: 'chloe',
-	name: 'Chloe',
-	surname: 'Walker',
+	name: 'Chloe Walker',
 	position: 'Staff',
 	email: 'chloe@omtanke.studio',
 	src: UserImage6,
@@ -126,10 +122,9 @@ const chloe: IUserProps = {
 };
 
 const sam: IUserProps = {
-	id: '7',
+	uid: '7',
 	username: 'sam',
-	name: 'Sam',
-	surname: 'Roberts',
+	name: 'Sam Roberts',
 	position: 'Worker',
 	email: 'sam@omtanke.studio',
 	src: UserImage7,
@@ -150,14 +145,26 @@ const USERS: { [key: string]: IUserProps } = {
 	SAM: sam,
 };
 
+
 export function getUserDataWithUsername(username: string): IUserProps {
 	// @ts-ignore
+	// TODO: GET user data
 	return USERS[Object.keys(USERS).filter((f) => USERS[f].username.toString() === username)];
 }
 
-export function getUserDataWithId(id?: string): IUserProps {
-	// @ts-ignore
-	return USERS[Object.keys(USERS).filter((f) => USERS[f].id.toString() === id.toString())];
-}
+// export function getUserDataWithId(id?: string){
+// 	// @ts-ignore
+// 	axios.get('https://api.heynova.work/user?id=' + id).
+// 			then(response => {
+// 				if(response.status == 200)
+// 				{ 
+// 					var user: IUserProps = {uid: id, 
+// 											name: response.data.name}
+// 					return user
+// 				}
+// 			})
+// 			.catch(error => {console.log(error);}); 
+	//return USERS[Object.keys(USERS).filter((f) => USERS[f].id.toString() === id.toString())];
+//}
 
 export default USERS;

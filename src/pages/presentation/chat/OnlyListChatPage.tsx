@@ -18,7 +18,7 @@ import Card, {
 	CardTitle,
 } from '../../../components/bootstrap/Card';
 import Chat, { ChatGroup, ChatHeader, ChatListItem } from '../../../components/Chat';
-import USERS, { IUserProps } from '../../../common/data/userDummyData';
+import USERS, { IUserProps } from '../../../contexts/UserData';
 import OffCanvas, { OffCanvasBody, OffCanvasHeader } from '../../../components/bootstrap/OffCanvas';
 import InputGroup from '../../../components/bootstrap/forms/InputGroup';
 import Textarea from '../../../components/bootstrap/forms/Textarea';
@@ -117,7 +117,6 @@ const OnlyListChatPage = () => {
 										src={USERS.CHLOE.src}
 										srcSet={USERS.CHLOE.srcSet}
 										name={USERS.CHLOE.name}
-										surname={USERS.CHLOE.surname}
 										isOnline={USERS.CHLOE.isOnline}
 										color={USERS.CHLOE.color}
 										lastSeenTime={moment().add(-1, 'week').fromNow()}
@@ -129,7 +128,6 @@ const OnlyListChatPage = () => {
 										src={USERS.GRACE.src}
 										srcSet={USERS.GRACE.srcSet}
 										name={USERS.GRACE.name}
-										surname={USERS.GRACE.surname}
 										isOnline={USERS.GRACE.isOnline}
 										color={USERS.GRACE.color}
 										unreadMessage={13}
@@ -142,7 +140,6 @@ const OnlyListChatPage = () => {
 										src={USERS.JANE.src}
 										srcSet={USERS.JANE.srcSet}
 										name={USERS.JANE.name}
-										surname={USERS.JANE.surname}
 										isOnline={USERS.JANE.isOnline}
 										color={USERS.JANE.color}
 										unreadMessage={1}
@@ -169,7 +166,6 @@ const OnlyListChatPage = () => {
 										src={USERS.RYAN.src}
 										srcSet={USERS.RYAN.srcSet}
 										name={USERS.RYAN.name}
-										surname={USERS.RYAN.surname}
 										isOnline={USERS.RYAN.isOnline}
 										color={USERS.RYAN.color}
 										lastSeenTime={moment().add(-3, 'day').fromNow()}
@@ -182,7 +178,6 @@ const OnlyListChatPage = () => {
 										src={USERS.ELLA.src}
 										srcSet={USERS.ELLA.srcSet}
 										name={USERS.ELLA.name}
-										surname={USERS.ELLA.surname}
 										isOnline={USERS.ELLA.isOnline}
 										color={USERS.ELLA.color}
 										lastSeenTime={moment().fromNow()}
@@ -194,7 +189,6 @@ const OnlyListChatPage = () => {
 										src={USERS.SAM.src}
 										srcSet={USERS.SAM.srcSet}
 										name={USERS.SAM.name}
-										surname={USERS.SAM.surname}
 										isOnline={USERS.SAM.isOnline}
 										color={USERS.SAM.color}
 										lastSeenTime={moment().add(-5, 'week').fromNow()}
@@ -218,9 +212,7 @@ const OnlyListChatPage = () => {
 						<ChatHeader
 							to={
 								activeTab
-									? `${'name' in activeTab && activeTab.name} ${
-											'surname' in activeTab && activeTab.surname
-									  }`
+									? `${'name' in activeTab && activeTab.name}`
 									: ''
 							}
 						/>

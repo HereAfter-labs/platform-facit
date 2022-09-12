@@ -1,42 +1,47 @@
-import moment from 'moment';
-import USERS, { IUserProps } from './userDummyData';
 import EVENT_STATUS, { IEventStatus } from './enumEventStatus';
-import SERVICES, { IServiceProps } from './serviceDummyData';
+import SERVICES, { IServiceProps } from '../../contexts/serviceDummyData';
 
 const data: {
 	id: number;
 	status: IEventStatus['key'];
 	taskname: string;
-	duedate: string;
+	duedate: Date;
 }[] = [
 	{
 		id: 1,
 		status: EVENT_STATUS.APPROVED,
 		taskname: 'Meeting with Codeware',
 		duedate:
-			moment().format('YYYY') + moment().format('MM') + moment().add(1, 'days').format('DD')
+			new Date()
 	},
-	{
-		id: 2,
-		status: EVENT_STATUS.APPROVED,
-		taskname: 'Login Design',
-		duedate:
-			moment().format('YYYY') + moment().format('MM') + moment().add(1, 'days').format('DD')
-	},
-	{
-		id: 3,
-		status: EVENT_STATUS.APPROVED,
-		taskname: 'Meeting with Cowork',
-		duedate:
-			moment().format('YYYY') + moment().format('MM') + moment().add(1, 'days').format('DD')
-	},
-	{
-		id: 4,
-		status: EVENT_STATUS.APPROVED,
-		taskname: 'Market Research',
-		duedate:
-			moment().format('YYYY') + moment().format('MM') + moment().add(1, 'days').format('DD')
-	},
+	// {
+	// 	id: 2,
+	// 	status: EVENT_STATUS.APPROVED,
+	// 	taskname: 'Login Design',
+	// 	duedate:
+	// 		new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()+1)
+	// },
+	// {
+	// 	id: 3,
+	// 	status: EVENT_STATUS.PENDING,
+	// 	taskname: 'Meeting with Cowork',
+	// 	duedate:
+	// 	new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()+3)
+	// },
+	// {
+	// 	id: 4,
+	// 	status: EVENT_STATUS.APPROVED,
+	// 	taskname: 'Market Research',
+	// 	duedate:
+	// 	new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()+9)
+	// },
+	// {
+	// 	id: 5,
+	// 	status: EVENT_STATUS.PENDING,
+	// 	taskname: 'Market Research Cont.',
+	// 	duedate:
+	// 	new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()+10)
+	// }
 ];
 
 export default data;

@@ -37,456 +37,98 @@ export const dashboardMenu = {
 		path: '/',
 		icon: 'Dashboard',
 		subMenu: null,
-	},
-	// dashboardBooking: {
-	// 	id: 'dashboard-booking',
-	// 	text: 'Dashboard Booking',
-	// 	path: 'dashboard-booking',
-	// 	icon: 'emoji_transportation',
-	// 	subMenu: null,
-	// },
-	// crmDashboard: {
-	// 	id: 'crmDashboard',
-	// 	text: 'CRM Dashboard',
-	// 	path: 'crm/dashboard',
-	// 	icon: 'RecentActors',
-	// },
-	// summary: {
-	// 	id: 'summary',
-	// 	text: 'Summary',
-	// 	path: 'summary',
-	// 	icon: 'sticky_note_2',
-	// 	subMenu: null,
-	// },
+	}
 };
 
 export const pages = {
-	// pages: {
-	// 	id: 'pages',
-	// 	text: 'Pages',
-	// 	icon: 'Extension',
-	// },
-	// singlePages: {
-	// 	id: 'singlePages',
-	// 	text: 'Single Pages',
-	// 	path: 'single-pages',
-	// 	icon: 'Article',
-	// 	subMenu: {
-	// 		boxedSingle: {
-	// 			id: 'boxedSingle',
-	// 			text: 'Boxed',
-	// 			path: 'single-pages/boxed',
-	// 			icon: 'ViewArray',
-	// 		},
-	// 		fluidSingle: {
-	// 			id: 'fluidSingle',
-	// 			text: 'Fluid',
-	// 			path: 'single-pages/fluid',
-	// 			icon: 'ViewDay',
-	// 		},
-	// 	},
-	// },
-	// listPages: {
-	// 	id: 'listPages',
-	// 	text: 'List Pages',
-	// 	path: 'list-pages',
-	// 	icon: 'Dvr',
-	// 	subMenu: {
-	// 		listBoxed: {
-	// 			id: 'listBoxed',
-	// 			text: 'Boxed List',
-	// 			path: 'list-pages/boxed-list',
-	// 			icon: 'ViewArray',
-	// 		},
-	// 		listFluid: {
-	// 			id: 'listFluid',
-	// 			text: 'Fluid List',
-	// 			path: 'list-pages/fluid-list',
-	// 			icon: 'ViewDay',
-	// 		},
-	// 	},
-	// },
-	// gridPages: {
-	// 	id: 'gridPages',
-	// 	text: 'Grid Pages',
-	// 	path: 'grid-pages',
-	// 	icon: 'Window',
-	// 	subMenu: {
-	// 		gridBoxed: {
-	// 			id: 'gridBoxed',
-	// 			text: 'Boxed Grid',
-	// 			path: 'grid-pages/boxed',
-	// 			icon: 'ViewArray',
-	// 		},
-	// 		gridFluid: {
-	// 			id: 'gridFluid',
-	// 			text: 'Fluid Grid',
-	// 			path: 'grid-pages/fluid',
-	// 			icon: 'ViewDay',
-	// 		},
-	// 	},
-	// },
-	// editPages: {
-	// 	id: 'editPages',
-	// 	text: 'Edit Pages',
-	// 	path: 'edit-pages',
-	// 	icon: 'drive_file_rename_outline ',
-	// 	subMenu: {
-	// 		editModern: {
-	// 			id: 'editModern',
-	// 			text: 'Modern Edit',
-	// 			path: 'edit-pages/modern',
-	// 			icon: 'AutoAwesomeMosaic',
-	// 			notification: 'primary',
-	// 		},
-	// 		editBoxed: {
-	// 			id: 'editBoxed',
-	// 			text: 'Boxed Edit',
-	// 			path: 'edit-pages/boxed',
-	// 			icon: 'ViewArray',
-	// 		},
-	// 		editFluid: {
-	// 			id: 'editFluid',
-	// 			text: 'Fluid Edit',
-	// 			path: 'edit-pages/fluid',
-	// 			icon: 'ViewDay',
-	// 		},
-	// 		editWizard: {
-	// 			id: 'editWizard',
-	// 			text: 'Wizard Edit',
-	// 			path: 'edit-pages/wizard',
-	// 			icon: 'LinearScale',
-	// 		},
-	// 		editInCanvas: {
-	// 			id: 'editInCanvas',
-	// 			text: 'In Canvas Edit',
-	// 			path: 'edit-pages/in-canvas',
-	// 			icon: 'VerticalSplit',
-	// 		},
-	// 		editInModal: {
-	// 			id: 'editInModal',
-	// 			text: 'In Modal Edit',
-	// 			path: 'edit-pages/in-modal',
-	// 			icon: 'PictureInPicture',
-	// 		},
-	// 	},
-	// },
-	// pricingTable: {
-	// 	id: 'pricingTable',
-	// 	text: 'Pricing Table',
-	// 	path: 'pricing-table',
-	// 	icon: 'Local Offer',
-	// },
-
-	auth: {
-		id: 'auth',
-		text: 'Teams',
-		icon: 'Extension',
-	},
 	login: {
 		id: 'login',
-		text: 'Team Members',
+		text: 'Login',
 		path: 'auth-pages/login',
-		icon: 'Login',
 	},
 	signUp: {
-		id: 'signUp',
-		text: 'Organizational Chart',
-		path: 'auth-pages/sign-up',
-		icon: 'PersonAdd',
+		id: 'signup',
+		text: 'Sign Up',
+		path: 'auth-pages/signup',
+	}};
+
+export const Teams = {
+	teams: {
+		id: 'team',
+		text: 'Team',
 	},
-
-	// page404: {
-	// 	id: 'Page404',
-	// 	text: '404 Page',
-	// 	path: 'auth-pages/404',
-	// 	icon: 'ReportGmailerrorred',
-	// },
-
-	// app: {
-	// 	id: 'app',
-	// 	text: 'Apps',
-	// 	icon: 'Extension',
-	// },
-	// projectManagement: {
-	// 	id: 'projectManagement',
-	// 	text: 'Project Management',
-	// 	path: 'project-management',
-	// 	icon: 'AutoStories',
-	// 	subMenu: {
-	// 		list: {
-	// 			id: 'list',
-	// 			text: 'Projects',
-	// 			path: 'project-management/list',
-	// 			icon: 'AutoStories',
-	// 		},
-	// 		itemID: {
-	// 			id: 'projectID',
-	// 			text: 'projectID',
-	// 			path: 'project-management/project',
-	// 			hide: true,
-	// 		},
-	// 		item: {
-	// 			id: 'item',
-	// 			text: 'Project',
-	// 			path: 'project-management/project/1',
-	// 			icon: 'Book',
-	// 		},
-	// 	},
-	// },
-	// knowledge: {
-	// 	id: 'knowledge',
-	// 	text: 'Knowledge',
-	// 	path: 'knowledge',
-	// 	icon: 'AutoStories',
-	// 	subMenu: {
-	// 		grid: {
-	// 			id: 'grid',
-	// 			text: 'Knowledge Grid',
-	// 			path: 'knowledge/grid',
-	// 			icon: 'AutoStories',
-	// 		},
-	// 		itemID: {
-	// 			id: 'itemID',
-	// 			text: 'itemID',
-	// 			path: 'knowledge/item',
-	// 			hide: true,
-	// 		},
-	// 		item: {
-	// 			id: 'item',
-	// 			text: 'Item',
-	// 			path: 'knowledge/item/1',
-	// 			icon: 'Book',
-	// 		},
-	// 	},
-	// },
-	// sales: {
-	// 	id: 'sales',
-	// 	text: 'Sales',
-	// 	path: 'sales',
-	// 	icon: 'Store',
-	// 	subMenu: {
-	// 		dashboard: dashboardMenu.dashboard,
-	// 		salesList: {
-	// 			id: 'products',
-	// 			text: 'Sales List',
-	// 			path: 'sales/sales-list',
-	// 			icon: 'FactCheck',
-	// 		},
-	// 		productsGrid: {
-	// 			id: 'productsGrid',
-	// 			text: 'Products Grid',
-	// 			path: 'sales/grid',
-	// 			icon: 'CalendarViewMonth',
-	// 		},
-	// 		productID: {
-	// 			id: 'productID',
-	// 			text: 'productID',
-	// 			path: 'sales/product',
-	// 			hide: true,
-	// 		},
-	// 		product: {
-	// 			id: 'product',
-	// 			text: 'Product',
-	// 			path: 'sales/product/1',
-	// 			icon: 'QrCode2',
-	// 		},
-	// 		transactions: {
-	// 			id: 'transactions',
-	// 			text: 'Transactions',
-	// 			path: 'sales/transactions',
-	// 			icon: 'PublishedWithChanges',
-	// 		},
-	// 	},
-	//},
-	// appointment: {
-	// 	id: 'appointment',
-	// 	text: 'Appointment',
-	// 	path: 'appointment',
-	// 	icon: 'Today',
-	// 	subMenu: {
-	// 		dashboard: dashboardMenu.dashboardBooking,
-	// 		calendar: {
-	// 			id: 'calendar',
-	// 			text: 'Calendar',
-	// 			path: 'appointment/calendar',
-	// 			icon: 'EditCalendar',
-	// 			notification: true,
-	// 		},
-	// 		employeeList: {
-	// 			id: 'employeeList',
-	// 			text: 'Employee List',
-	// 			path: 'appointment/employee-list',
-	// 			icon: 'PersonSearch',
-	// 		},
-	// 		employeeID: {
-	// 			id: 'employeeID',
-	// 			text: 'employeeID',
-	// 			path: 'appointment/employee',
-	// 			hide: true,
-	// 		},
-	// 		employee: {
-	// 			id: 'employee',
-	// 			text: 'Employee',
-	// 			path: 'appointment/employee/1',
-	// 			icon: 'QrCode2',
-	// 		},
-	// 		appointmentList: {
-	// 			id: 'appointmentList',
-	// 			text: 'Appointment List',
-	// 			path: 'appointment/appointment-list',
-	// 			icon: 'Event',
-	// 		},
-	// 	},
-	// },
-	// crm: {
-	// 	id: 'crm',
-	// 	text: 'CRM',
-	// 	path: 'crm',
-	// 	icon: 'Contacts',
-	// 	subMenu: {
-	// 		dashboard: {
-	// 			id: 'dashboard',
-	// 			text: 'CRM Dashboard',
-	// 			path: 'crm/dashboard',
-	// 			icon: 'RecentActors',
-	// 		},
-	// 		customersList: {
-	// 			id: 'customersList',
-	// 			text: 'Customers',
-	// 			path: 'crm/customers',
-	// 			icon: 'PersonSearch',
-	// 		},
-	// 		customerID: {
-	// 			id: 'customerID',
-	// 			text: 'customerID',
-	// 			path: 'crm/customer',
-	// 			hide: true,
-	// 		},
-	// 		customer: {
-	// 			id: 'customer',
-	// 			text: 'Customer',
-	// 			path: 'crm/customer/1',
-	// 			icon: 'Badge',
-	// 		},
-			// sales: {
-			// 	id: 'sales',
-			// 	text: 'Sales',
-			// 	path: 'crm/sales',
-			// 	icon: 'Storefront',
-			// },
-			// invoiceID: {
-			// 	id: 'invoiceID',
-			// 	text: 'invoiceID',
-			// 	path: 'crm/invoice',
-			// 	hide: true,
-			// },
-			// invoice: {
-			// 	id: 'invoice',
-			// 	text: 'Invoice',
-			// 	path: 'crm/invoice/1',
-			// 	icon: 'Receipt',
-			// },
-	// 	},
-	// },
+	teamMembers: {
+		id: 'teamMembers',
+		text: 'Team Members',
+		path: '/team',
+		icon: 'Login',
+	}
 };
 
 export const officeMenu = {
-	layoutTypes: {
-		id: 'layoutTypes',
+	office: {
+		id: 'office',
 		text: 'Office',
 	},
-	chat: {
-		id: 'chat',
-		text: 'Chat',
-		path: 'chat',
-		icon: 'Forum',
-		// subMenu: {
-		// 	withListChat: {
-		// 		id: 'withListChat',
-		// 		text: 'With List',
-		// 		path: 'chat/with-list',
-		// 		icon: 'Quickreply',
-		// 	},
-		// 	onlyListChat: {
-		// 		id: 'onlyListChat',
-		// 		text: 'Only List',
-		// 		path: 'chat/only-list',
-		// 		icon: 'Dns',
-		// 	},
-		// },
-	},
-	blank: {
-		id: 'blank',
-		text: 'Voice Channels',
-		path: 'page-layouts/blank',
-		//icon: 'check_box_outline_blank ',
-		subMenu: {
-			headerAndSubheader: {
-				id: 'headerAndSubheader',
-				text: 'Talha',
-				path: 'page-layouts/header-and-subheader',
-				icon: 'ViewAgenda',
-			},
-			onlyHeader: {
-				id: 'onlyHeader',
-				text: 'Leyla',
-				path: 'page-layouts/only-header',
-				icon: 'ViewStream',
-			},
-			onlySubheader: {
-				id: 'onlySubheader',
-				text: 'Codeware',
-				path: 'page-layouts/only-subheader',
-				icon: 'ViewStream',
-			},
-			onlyContent: {
-				id: 'onlyContent',
-				text: 'Silent',
-				path: 'page-layouts/only-content',
-				icon: 'WebAsset',
-			},
-		},
-	},
-	pageLayout: {
-		id: 'pageLayout',
+	proxima: {
+		id: 'proxima',
 		text: 'Go to Proxima',
 		path: 'page-layouts',
 		icon: 'BackupTable',
 	},
+	voice: {
+			id: 'voice',
+			text: 'Voice Channels',
+			path: 'page-layouts/blank',
+			//icon: 'check_box_outline_blank ',
+			subMenu: {
+				onlySubheader: {
+					id: 'onlySubheader',
+					text: 'Codeware',
+					path: 'page-layouts/only-subheader',
+					icon: 'ViewStream',
+				},
+				onlyContent: {
+					id: 'onlyContent',
+					text: 'Silent',
+					path: 'page-layouts/only-content',
+					icon: 'WebAsset',
+				},
+			},
+	},
+};
+
+export const ChatItem = {
+	chat: {
+		id: 'chat',
+		text: 'Chat',
+		path: 'chat',
+		icon: 'Forum'
+	}};
+
+export const TodosItem = {
+	todos: {
+		id: 'todos',
+		text: 'To-dos',
+		path: 'todo',
+		icon: 'ViewAgenda',
+	}};
+
+export const CalendarItem = {
 	calendar: {
 		id: 'calendar',
 		text: 'Calendar',
 		path: 'appointment/calendar',
 		icon: 'CalendarViewMonth',
-	},
+	}};
+
+export const OclockItem = {
 	oclock: {
 		id: 'pageLayout',
 		text: 'O\'clock',
 		path: 'page-layouts',
 		icon: 'BackupTable',
-	},
-	// asideTypes: {
-	// 	id: 'asideTypes',
-	// 	text: 'Aside Types',
-	// 	path: 'aside-types',
-	// 	icon: 'Vertical Split',
-	// 	subMenu: {
-	// 		defaultAside: {
-	// 			id: 'defaultAside',
-	// 			text: 'Default Aside',
-	// 			path: 'aside-types/default-aside',
-	// 			icon: 'ViewQuilt',
-	// 		},
-	// 		minimizeAside: {
-	// 			id: 'minimizeAside',
-	// 			text: 'Minimize Aside',
-	// 			path: 'aside-types/minimize-aside',
-	// 			icon: 'View Compact',
-	// 		},
-	// 	},
-	// },
-};
+	}};
 
 // export const componentsMenu = {
 // 	bootstrap: {

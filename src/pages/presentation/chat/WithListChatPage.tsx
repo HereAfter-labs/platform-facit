@@ -1,4 +1,4 @@
-import React, { SetStateAction, useContext, useState } from 'react';
+import React, { SetStateAction, useCallback, useContext, useEffect, useState } from 'react';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import SubHeader, { SubHeaderLeft, SubHeaderRight } from '../../../layout/SubHeader/SubHeader';
@@ -18,12 +18,15 @@ import PageWrapper from '../../../layout/PageWrapper/PageWrapper';
 import Chat, { ChatAvatar, ChatGroup, ChatListItem } from '../../../components/Chat';
 import InputGroup from '../../../components/bootstrap/forms/InputGroup';
 import Textarea from '../../../components/bootstrap/forms/Textarea';
-import USERS, { IUserProps } from '../../../common/data/userDummyData';
+import USERS, { IUserProps } from '../../../contexts/UserData';
 import Icon from '../../../components/icon/Icon';
 import ThemeContext from '../../../contexts/themeContext';
 import { pages } from '../../../menu';
 import CHATS, { IMessages } from '../../../common/data/chatDummyData';
 import CommonChatStatus from '../../common/CommonChatStatus';
+import UserImage6 from '../../../assets/img/wanna/wanna6.png';
+import UserImage6Webp from '../../../assets/img/wanna/wanna6.webp';
+import axios from 'axios';
 
 const WithListChatPage = () => {
 	const navigate = useNavigate();
@@ -36,6 +39,24 @@ const WithListChatPage = () => {
 		ELLA: USERS.ELLA,
 		SAM: USERS.SAM,
 	};
+
+	const [teamUsers, setteamUsers] = useState<Array<IUserProps | SetStateAction<null>>>();
+
+	const fetchUsers = useCallback(async () => {
+		const res = await axios.get('https://api.heynova.work/users');
+		if(res.status == 200)
+			//var user: IUserProps = {}
+			setteamUsers(Array());
+	  }, [])
+
+	useEffect(() => {
+		if (teamUsers !== []) {
+			fetchUsers().catch((error) => console.log(error));
+		} else {
+			setteamUsers(Array());
+		}
+	}, [fetchUsers]);
+
 	const [activeTab, setActiveTab] = useState<IUserProps | SetStateAction<null>>(TABS.CHLOE);
 
 	function getMessages(ACTIVE_TAB: IUserProps): IMessages[] | null {
@@ -51,7 +72,6 @@ const WithListChatPage = () => {
 		if (ACTIVE_TAB === USERS.RYAN) {
 			return CHATS.RYAN_VS_JOHN;
 		}
-
 		if (ACTIVE_TAB === USERS.ELLA) {
 			return CHATS.ELLA_VS_JOHN;
 		}
@@ -109,57 +129,27 @@ const WithListChatPage = () => {
 										<CardHeader className='sticky-top'>
 											<CardLabel icon='AccountCircle' iconColor='success'>
 												<CardTitle>Online</CardTitle>
-												<CardSubTitle>3 users</CardSubTitle>
+												<CardSubTitle>{} users</CardSubTitle>
 											</CardLabel>
 										</CardHeader>
 										<CardBody className='border-bottom border-light'>
 											<div className='row'>
+												{ teamUsers.map((user) => (
 												<ChatListItem
 													onClick={() => getListShow(TABS.CHLOE)}
 													isActive={activeTab === TABS.CHLOE}
-													src={USERS.CHLOE.src}
-													srcSet={USERS.CHLOE.srcSet}
-													name={USERS.CHLOE.name}
-													surname={USERS.CHLOE.surname}
-													isOnline={USERS.CHLOE.isOnline}
-													color={USERS.CHLOE.color}
+													src={UserImage6}
+													srcSet={UserImage6Webp}
+													name={user.name}
+													isOnline={true}
+													color={"light"}
 													lastSeenTime={moment()
 														.add(-1, 'week')
 														.fromNow()}
 													latestMessage={
 														"I think it's really starting to shine."
 													}
-												/>
-												<ChatListItem
-													onClick={() => getListShow(TABS.GRACE)}
-													isActive={activeTab === TABS.GRACE}
-													src={USERS.GRACE.src}
-													srcSet={USERS.GRACE.srcSet}
-													name={USERS.GRACE.name}
-													surname={USERS.GRACE.surname}
-													isOnline={USERS.GRACE.isOnline}
-													color={USERS.GRACE.color}
-													unreadMessage={13}
-													lastSeenTime={moment()
-														.add(-1, 'hour')
-														.fromNow()}
-													latestMessage='Curabitur ornare mattis urna euismod molestie.'
-												/>
-												<ChatListItem
-													onClick={() => getListShow(TABS.JANE)}
-													isActive={activeTab === TABS.JANE}
-													src={USERS.JANE.src}
-													srcSet={USERS.JANE.srcSet}
-													name={USERS.JANE.name}
-													surname={USERS.JANE.surname}
-													isOnline={USERS.JANE.isOnline}
-													color={USERS.JANE.color}
-													unreadMessage={1}
-													lastSeenTime={moment()
-														.add(-3, 'hour')
-														.fromNow()}
-													latestMessage='Nulla sollicitudin consectetur arcu, sit amet rutrum felis tincidunt non.'
-												/>
+												/>))}
 											</div>
 										</CardBody>
 									</Card>
@@ -178,7 +168,6 @@ const WithListChatPage = () => {
 													src={USERS.RYAN.src}
 													srcSet={USERS.RYAN.srcSet}
 													name={USERS.RYAN.name}
-													surname={USERS.RYAN.surname}
 													isOnline={USERS.RYAN.isOnline}
 													color={USERS.RYAN.color}
 													lastSeenTime={moment().add(-3, 'day').fromNow()}
@@ -190,7 +179,6 @@ const WithListChatPage = () => {
 													src={USERS.ELLA.src}
 													srcSet={USERS.ELLA.srcSet}
 													name={USERS.ELLA.name}
-													surname={USERS.ELLA.surname}
 													isOnline={USERS.ELLA.isOnline}
 													color={USERS.ELLA.color}
 													lastSeenTime={moment().fromNow()}
@@ -202,7 +190,6 @@ const WithListChatPage = () => {
 													src={USERS.SAM.src}
 													srcSet={USERS.SAM.srcSet}
 													name={USERS.SAM.name}
-													surname={USERS.SAM.surname}
 													isOnline={USERS.SAM.isOnline}
 													color={USERS.SAM.color}
 													lastSeenTime={moment()
@@ -216,14 +203,14 @@ const WithListChatPage = () => {
 								</CardBody>
 								<CardFooter>
 									<CardFooterLeft className='w-100'>
-										<Button
+										{/* <Button
 											icon='Logout'
 											color='danger'
 											isLight
 											className='w-100 p-3'
 											onClick={() => navigate(`../${pages.login.path}`)}>
 											Logout
-										</Button>
+										</Button> */}
 									</CardFooterLeft>
 								</CardFooter>
 							</Card>
@@ -242,10 +229,7 @@ const WithListChatPage = () => {
 											/>
 											<div className='fw-bold'>
 												{activeTab
-													? `${'name' in activeTab && activeTab.name} ${
-															'surname' in activeTab &&
-															activeTab.surname
-													  }`
+													? `${'name' in activeTab && activeTab.name}`
 													: ''}
 											</div>
 										</div>

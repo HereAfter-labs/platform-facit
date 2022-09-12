@@ -14,8 +14,8 @@ import FormGroup from '../../../components/bootstrap/forms/FormGroup';
 import Label from '../../../components/bootstrap/forms/Label';
 import Input from '../../../components/bootstrap/forms/Input';
 import Checks, { ChecksGroup } from '../../../components/bootstrap/forms/Checks';
-import SERVICES from '../../../common/data/serviceDummyData';
-import { pages } from '../../../menu';
+import SERVICES from '../../../contexts/serviceDummyData';
+//import { demoPages } from '../../../menu';
 import useTourStep from '../../../hooks/useTourStep';
 
 const EmployeeList = () => {

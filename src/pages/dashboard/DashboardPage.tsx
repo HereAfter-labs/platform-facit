@@ -106,7 +106,7 @@ const DashboardPage = () => {
 								height={13}
 								max={listLength}
 								value={completeTaskLength}
-								color={completeTaskLength === listLength ? 'success' : 'primary'}
+								color={completeTaskLength === listLength ? 'success' : 'info'}
 						/>
 				</div>
 			</div>
@@ -119,9 +119,9 @@ const DashboardPage = () => {
 			</SubHeader>
 			<Page container='fluid'>
 				<div className='row'>
-					<div className='col-12'>
+					{/* <div className='col-12'>
 						<CommonDashboardAlert />
-					</div>
+					</div> */}
 
 					<div className='col-xl-4'>
 						<CommonDashboardUserCard />
@@ -143,13 +143,12 @@ const DashboardPage = () => {
 						<CommonDashboardUserIssue />
 					</div>
 
-					<div className='col-xxl-8'>
+					{/* <div className='col-xxl-8'>
 						<CommonDashboardSalesByStore />
 					</div>
 					<div className='col-xxl-4 col-xl-6'>
 						<CommonDashboardWaitingAnswer />
-					</div>
-
+					</div> */}
 					{/* <div className='col-xxl-4 col-xl-6'>
 						<CommonMyWallet />
 					</div> */}

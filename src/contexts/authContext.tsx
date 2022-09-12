@@ -1,10 +1,13 @@
-import React, { createContext, FC, ReactNode, useEffect, useMemo, useState } from 'react';
+import React, { createContext, FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import { getUserDataWithUsername, IUserProps } from '../common/data/userDummyData';
+import { IUserProps } from './UserData';
+import axios from 'axios';
+import UserImage4 from '../assets/img/wanna/wanna4.png';
+import UserImage4Webp from '../assets/img/wanna/wanna4.webp';
 
 export interface IAuthContextProps {
-	user: string;
-	setUser?(...args: unknown[]): unknown;
+	uid: string;
+	setUid?(...args: unknown[]): unknown;
 	userData: Partial<IUserProps>;
 }
 const AuthContext = createContext<IAuthContextProps>({} as IAuthContextProps);
@@ -13,28 +16,43 @@ interface IAuthContextProviderProps {
 	children: ReactNode;
 }
 export const AuthContextProvider: FC<IAuthContextProviderProps> = ({ children }) => {
-	const [user, setUser] = useState<string>(localStorage.getItem('facit_authUsername') || '');
+	const [uid, setUid] = useState<string>(localStorage.getItem('facit_authUid') || '');
 	const [userData, setUserData] = useState<Partial<IUserProps>>({});
 
 	useEffect(() => {
-		localStorage.setItem('facit_authUsername', user);
-	}, [user]);
+		localStorage.setItem('facit_authUid', uid);
+	}, [uid]);
+
+	const fetchUser = useCallback(async () => {
+		const res = await axios.get('https://api.heynova.work/user?id=' + uid)
+		         .then(response => {
+					if(response.status == 200)
+						{
+							var user: IUserProps = {uid: uid, 
+							name: response.data.name,
+							isOnline: true,
+							src: UserImage4,
+							srcSet: UserImage4Webp}
+						setUserData(user);
+						}
+					else {console.log(res);}})
+	  }, [])
 
 	useEffect(() => {
-		if (user !== '') {
-			setUserData(getUserDataWithUsername(user));
+		if (uid !== '') {
+			fetchUser().catch((error) => console.log(error));
 		} else {
 			setUserData({});
 		}
-	}, [user]);
+	}, [fetchUser]);
 
 	const value = useMemo(
 		() => ({
-			user,
-			setUser,
+			uid,
+			setUid,
 			userData,
 		}),
-		[user, userData],
+		[uid, userData],
 	);
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

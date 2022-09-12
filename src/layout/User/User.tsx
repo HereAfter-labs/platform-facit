@@ -13,7 +13,7 @@ import useNavigationItemHandle from '../../hooks/useNavigationItemHandle';
 import AuthContext from '../../contexts/authContext';
 
 const User = () => {
-	const { userData, setUser } = useContext(AuthContext);
+	const { userData, setUid } = useContext(AuthContext);
 
 	const navigate = useNavigate();
 	const handleItem = useNavigationItemHandle();
@@ -40,7 +40,7 @@ const User = () => {
 				</div>
 				<div className='user-info'>
 					<div className='user-name d-flex align-items-center'>
-						{`${userData?.name} ${userData?.surname}`}
+						{`${userData?.name}`}
 						<Icon icon='Verified' className='ms-1' color='info' />
 					</div>
 					<div className='user-sub-title'>{userData?.position}</div>
@@ -117,8 +117,8 @@ const User = () => {
 							role='presentation'
 							className='navigation-item cursor-pointer'
 							onClick={() => {
-								if (setUser) {
-									setUser('');
+								if (setUid) {
+									setUid('');
 								}
 								navigate(`../${pages.login.path}`);
 							}}>

@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useEffect, useContext, useCallback } from 'react';
 import classNames from 'classnames';
 import moment from 'moment';
 import { FormikHelpers, useFormik } from 'formik';
@@ -24,16 +24,31 @@ import OffCanvas, {
 } from '../../components/bootstrap/OffCanvas';
 import FormGroup from '../../components/bootstrap/forms/FormGroup';
 import Input from '../../components/bootstrap/forms/Input';
+import AuthContext from '../../contexts/authContext';
 import Textarea from '../../components/bootstrap/forms/Textarea';
 import Checks from '../../components/bootstrap/forms/Checks';
 import Popovers from '../../components/bootstrap/Popovers';
 import data from '../../common/data/dummyTasksData';
-import USERS from '../../common/data/userDummyData';
 import EVENT_STATUS from '../../common/data/enumEventStatus';
-import Avatar from '../../components/Avatar';
+import axios from 'axios';
+
 import PaginationButtons, { dataPagination, PER_COUNT } from '../../components/PaginationButtons';
 import useSortableData from '../../hooks/useSortableData';
 import useDarkMode from '../../hooks/useDarkMode';
+
+export class Task {
+	taskid?: number;
+	taskname: string;
+	duedate?: Date;
+	userid?: number;
+	status?: string;
+	constructor(uid: number, taskname: string, duetime: string, status: string) {
+		this.userid = uid;
+		this.taskname = taskname;
+		this.duedate = new Date(Number(duetime)  * 1000);
+		this.status = status;
+	  }
+}
 
 interface ICommonUpcomingTasksProps {
 	isFluid?: boolean;
@@ -46,6 +61,10 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 	const handleUpcomingDetails = () => {
 		setUpcomingTasksInfoOffcanvas(!upcomingTasksInfoOffcanvas);
 	};
+
+	const [allTasksScope, setallTasksScope] = useState(false);
+
+	const [startDate, setstartDate] = useState(new Date());
 
 	const [upcomingTasksEditOffcanvas, setUpcomingTasksEditOffcanvas] = useState(false);
 	const handleUpcomingEdit = () => {
@@ -61,29 +80,40 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 			return undefined;
 		},
 		initialValues: {
-			//customerName: 'Alison Berry',
-			//service: 'Exercise Bike',
-			//employee: `${USERS.GRACE.name} ${USERS.GRACE.surname}`,
-			//location: 'Maryland',
-			//status: EVENT_STATUS.PENDING,
-			duedate: moment().add(1, 'days').format('YYYY-MM-DD'),
+			duedate: new Date(),
 			taskname: 'ABC',
-			//time: '10:30',
-			//note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut nisi odio. Nam sit amet pharetra enim. Nulla facilisi. Nunc dictum felis id massa mattis pretium. Mauris at blandit orci. Nunc vulputate vulputate turpis vitae cursus. In sit amet turpis tincidunt, interdum ex vitae, sollicitudin massa. Maecenas eget dui molestie, ullamcorper ante vel, tincidunt nisi. Donec vitae pulvinar risus. In ultricies nisl ac massa malesuada, vel tempus neque placerat.',
 			notify: true,
 		},
 	});
 
 	const [currentPage, setCurrentPage] = useState(1);
 	const [perPage, setPerPage] = useState(PER_COUNT['5']);
-	const { items, requestSort, getClassNamesFor } = useSortableData(data);
+	//const { items, requestSort, getClassNamesFor } = useSortableData(data);
+	const [tasks, setTasks] = useState(Array<Task>);
+	const [uid] = useState<string>(localStorage.getItem('facit_authUid') || '');
+
+	const fetchTasks = useCallback(async () => {
+		const res = await axios.get('https://api.heynova.work/task/get?user_id=' + uid)
+		   .then(response => {
+					console.log(response);
+					setTasks(response.data.map((item) => 
+							(new Task(item.userid, item.task_name, item.duetime, item.status))))});
+	  }, [])
+
+	useEffect(() => {
+		if (uid !== '') {
+			fetchTasks().catch((error) => console.log(error));
+		} else {
+			setTasks([]);
+		}
+	}, [fetchTasks]);
 
 	return (
 		<>
 			<Card stretch={isFluid}>
 				<CardHeader borderSize={1}>
 					<CardLabel icon='Alarm' iconColor='info'>
-						<CardTitle>Upcoming Appointments</CardTitle>
+						<CardTitle>To-do List</CardTitle>
 					</CardLabel>
 					<CardActions>
 						<Button
@@ -96,6 +126,17 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 							download>
 							Export
 						</Button>
+						<Button 
+							style={{ color: allTasksScope ? '#ccccff' : themeStatus}}
+							onClick={() => {setallTasksScope(!allTasksScope);}}
+							>
+							All tasks
+						</Button>
+						<Button icon='ArrowLeft' onClick={() => {setstartDate(new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() - 7));}}></Button> 
+						<Button color={themeStatus}>
+						    {startDate.getDate()} {new Intl.DateTimeFormat('en-US', {month:'long'}).format(startDate)}
+						</Button> 
+						<Button icon='ArrowRight' onClick={() => {setstartDate(new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 7));}}></Button>
 					</CardActions>
 				</CardHeader>
 				<CardBody className='table-responsive' isScrollable={isFluid}>
@@ -103,8 +144,8 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 						<thead>
 							<tr>
 								<td style={{ width: 60 }} />
-								<th
-									onClick={() => requestSort('date')}
+								{/* <th
+									onClick={() => requestSort('duedate')}
 									className='cursor-pointer text-decoration-underline'>
 									Date / Time{' '}
 									<Icon
@@ -112,15 +153,20 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 										className={getClassNamesFor('date')}
 										icon='FilterList'
 									/>
-								</th>
+								</th> */}
 								<th>Status</th>
 								<th>Task Name</th>
 								<th>Due Date</th>
 								<td />
 							</tr>
 						</thead>
-						<tbody>
-							{dataPagination(items, currentPage, perPage).map((item) => (
+					
+						 <tbody>
+							{dataPagination(tasks, currentPage, perPage)
+							  .filter(task => allTasksScope || (task.duedate.getFullYear() <= startDate.getFullYear() && 
+							  									task.duedate.getMonth() <= startDate.getMonth() && 
+																task.duedate.getDate() <= startDate.getDate()))
+							    .map((item) => (
 								<tr key={item.id}>
 									<td>
 										<Button
@@ -136,55 +182,6 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 										/>
 									</td>
 									<td>
-										<div className='d-flex align-items-center'>
-											<span
-												className={classNames(
-													'badge',
-													'border border-2',
-													[`border-${themeStatus}`],
-													'rounded-circle',
-													'bg-success',
-													'p-2 me-2',
-													`bg-${item.status.color}`,
-												)}>
-												<span className='visually-hidden'>
-													{item.status.name}
-												</span>
-											</span>
-											<span className='text-nowrap'>
-												{moment(`${item.duedate}`).format(
-													'MMM Do YYYY, a',
-												)}
-											</span>
-										</div>
-									</td>
-									{/* <td>
-										<div>
-											<div>{item.customer.name}</div>
-											<div className='small text-muted'>
-												{item.customer.email}
-											</div>
-										</div>
-									</td> */}
-									<td>
-										<div className='d-flex'>
-											<div className='flex-shrink-0'>
-												<Avatar
-													src={item.assigned.src}
-													srcSet={item.assigned.srcSet}
-													color={item.assigned.color}
-													size={36}
-												/>
-											</div>
-											<div className='flex-grow-1 ms-3 d-flex align-items-center text-nowrap'>
-												{`${item.assigned.name} ${item.assigned.surname}`}
-											</div>
-										</div>
-									</td>
-									{/* <td>{item.service.name}</td>
-									<td>{item.duration}</td> 
-									<td>{item.payment && priceFormat(item.payment)}</td>*/}
-									<td>
 										<Dropdown>
 											<DropdownToggle hasIcon={false}>
 												<Button
@@ -192,7 +189,7 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 													color={item.status.color}
 													icon='Circle'
 													className='text-nowrap'>
-													{item.status.name}
+													{item.status}
 												</Button>
 											</DropdownToggle>
 											<DropdownMenu>
@@ -211,17 +208,32 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 										</Dropdown>
 									</td>
 									<td>
-										<Button
-											isOutline={!darkModeStatus}
-											color='dark'
-											isLight={darkModeStatus}
-											className={classNames('text-nowrap', {
-												'border-light': !darkModeStatus,
-											})}
-											icon='Edit'
-											onClick={handleUpcomingEdit}>
-											Edit
-										</Button>
+										<span>
+											{item.taskname}
+										</span>
+									</td>
+									<td>
+										<div className='d-flex align-items-center'>
+											<span
+												className={classNames(
+													'badge',
+													'border border-2',
+													[`border-${themeStatus}`],
+													'rounded-circle',
+													'bg-success',
+													'p-2 me-2',
+													`bg-${item.status.color}`,
+												)}>
+												<span className='visually-hidden'>
+													{item.status}
+												</span>
+											</span>
+											<span className='text-nowrap'>
+												{item.duedate.format(
+													'MMM Do YYYY, a',
+												)}
+											</span>
+										</div>
 									</td>
 								</tr>
 							))}
@@ -229,8 +241,8 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 					</table>
 				</CardBody>
 				<PaginationButtons
-					data={items}
-					label='items'
+					data={tasks}
+					label='tasks'
 					setCurrentPage={setCurrentPage}
 					currentPage={currentPage}
 					perPage={perPage}
@@ -248,36 +260,7 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 				</OffCanvasHeader>
 				<OffCanvasBody>
 					<div className='row g-4'>
-						<div className='col-lg-6'>
-							<FormGroup
-								id='dateInfo'
-								name='date'
-								label='Date/Time'
-								isColForLabel
-								labelClassName='col-sm-2 text-capitalize'
-								childWrapperClassName='col-sm-10'>
-								<Input
-									value={moment(
-										// @ts-ignore
-										`${data.find((e) => e.id === 1).duedate} `,
-									).format('MMM Do YYYY, a')}
-									readOnly
-									disabled
-								/>
-							</FormGroup>
-						</div>
 						<div className='w-100' />
-						{/* <div className='col-lg-6'>
-							<FormGroup
-								id='noteInfo'
-								name='note'
-								label='Note'
-								isColForLabel
-								labelClassName='col-sm-2 text-capitalize'
-								childWrapperClassName='col-sm-10'>
-								<Textarea value={formik.values.note} readOnly disabled />
-							</FormGroup>
-						</div> */}
 					</div>
 				</OffCanvasBody>
 			</OffCanvas>
@@ -293,31 +276,6 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 				</OffCanvasHeader>
 				<OffCanvasBody>
 					<div className='row g-4'>
-						{/* <div className='col-6'>
-								<FormGroup id='status' label='Status'>
-									<Input
-										onChange={formik.handleChange}
-										value={formik.values.status}
-										type='date'
-									/>
-								</FormGroup>
-							</div> */}
-						{/* <div className='col-12'>
-							<FormGroup id='customerName' label='Customer'>
-								<Input
-									onChange={formik.handleChange}
-									value={formik.values.customerName}
-								/>
-							</FormGroup>
-						</div> */}
-						{/* <div className='col-12'>
-							<FormGroup id='service' label='Service'>
-								<Input
-									onChange={formik.handleChange}
-									value={formik.values.service}
-								/>
-							</FormGroup>
-						</div> */}
 						<div className='col-12'>
 							<FormGroup id='taskname' label='Task Name'>
 								<Input
@@ -326,49 +284,24 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 								/>
 							</FormGroup>
 						</div>
-						{/* <div className='col-12'>
-							<FormGroup id='location' label='Location'>
+						<div className='col-lg-6'>
+							<FormGroup
+								id='duedate'
+								name='duedate'
+								label='Due Date'
+								isColForLabel
+								labelClassName='col-sm-2 text-capitalize'
+								childWrapperClassName='col-sm-10'>
 								<Input
-									onChange={formik.handleChange}
-									value={formik.values.location}
-								/>
-							</FormGroup>
-						</div> */}
-						<div className='col-6'>
-							<FormGroup id='duedate' label='Due Date'>
-								<Input
-									onChange={formik.handleChange}
-									value={formik.values.duedate}
-									type='date'
+									value={moment(
+										// @ts-ignore
+										`${data.find((e) => e.id === 1).duedate} `,
+									).format('MMM Do YYYY, a')}
+									readOnly
+									disabled
 								/>
 							</FormGroup>
 						</div>
-						{/* <div className='col-6'>
-							<FormGroup id='time' label='time'>
-								<Input
-									onChange={formik.handleChange}
-									value={formik.values.time}
-									type='time'
-								/>
-							</FormGroup>
-						</div> */}
-						{/* <div className='col-12'>
-							<Card isCompact borderSize={2} shadow='none' className='mb-0'>
-								<CardHeader>
-									<CardLabel>
-										<CardTitle>Extras</CardTitle>
-									</CardLabel>
-								</CardHeader>
-								<CardBody>
-									<FormGroup id='note' label='Note'>
-										<Textarea
-											onChange={formik.handleChange}
-											value={formik.values.note}
-										/>
-									</FormGroup>
-								</CardBody>
-							</Card>
-						</div> */}
 						<div className='col-12'>
 							<Card isCompact borderSize={2} shadow='none' className='mb-0'>
 								<CardHeader>

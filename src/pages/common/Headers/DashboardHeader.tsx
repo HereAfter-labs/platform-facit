@@ -1,6 +1,5 @@
 import React from 'react';
 import Header, { HeaderLeft } from '../../../layout/Header/Header';
-//import CommonHeaderChat from './CommonHeaderChat';
 import Search from '../../../components/Search';
 import CommonHeaderRight from './CommonHeaderRight';
 
@@ -10,9 +9,8 @@ const DashboardHeader = () => {
 			<HeaderLeft>
 				<Search />
 			</HeaderLeft>
-			
+			<CommonHeaderRight />
 		</Header>
 	);
 };
-// <CommonHeaderRight afterChildren={<CommonHeaderChat />} /> 
 export default DashboardHeader;

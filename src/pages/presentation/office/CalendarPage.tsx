@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { Calendar, momentLocalizer, Views, View as TView } from 'react-big-calendar';
 import { useFormik } from 'formik';
 import { Calendar as DatePicker } from 'react-date-range';
-import USERS, { getUserDataWithUsername, IUserProps } from '../../../common/data/userDummyData';
+import USERS, { getUserDataWithUsername, IUserProps } from '../../../contexts/UserData';
 import eventList, { IEvents } from '../../../common/data/events';
 import {
 	CalendarTodayButton,
@@ -13,7 +13,7 @@ import {
 	getUnitType,
 	getViews,
 } from '../../../components/extras/calendarHelper';
-import SERVICES, { getServiceDataWithServiceName } from '../../../common/data/serviceDummyData';
+import SERVICES, { getServiceDataWithServiceName } from '../../../contexts/serviceDummyData';
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper';
 import { pages } from '../../../menu';
 import SubHeader, { SubHeaderLeft, SubHeaderRight } from '../../../layout/SubHeader/SubHeader';
@@ -82,10 +82,10 @@ const MyEvent = (data: { event: IEvent }) => {
 			{event?.users && (
 				<div className='col-auto'>
 					<AvatarGroup size={18}>
-						{event.users.map((user) => (
+						{/* {event.users.map((user) => (
 							// eslint-disable-next-line react/jsx-props-no-spreading
-							<Avatar key={user.src} {...user} />
-						))}
+							// <Avatar key={user.src} {...user} />
+						))} */}
 					</AvatarGroup>
 				</div>
 			)}
@@ -108,7 +108,7 @@ const MyWeekEvent = (data: { event: IEvent }) => {
 					<div className='row g-1 align-items-baseline'>
 						<div className='col-auto'>
 							{/* eslint-disable-next-line react/jsx-props-no-spreading */}
-							<Avatar {...event?.user} size={18} />
+							{/* <Avatar {...event?.user} size={18} /> */}
 						</div>
 						<small
 							className={classNames('col-auto text-truncate', {
@@ -123,10 +123,10 @@ const MyWeekEvent = (data: { event: IEvent }) => {
 			{event?.users && (
 				<div className='col-12'>
 					<AvatarGroup size={18}>
-						{event.users.map((user) => (
+						{/* {event.users.map((user) => (
 							// eslint-disable-next-line react/jsx-props-no-spreading
-							<Avatar key={user.src} {...user} />
-						))}
+							// <Avatar key={user.src} {...user} />
+						))} */}
 					</AvatarGroup>
 				</div>
 			)}
@@ -150,10 +150,10 @@ const MyEventDay = (data: { event: IEvent }) => {
 				{event?.users && (
 					<div className='col'>
 						<AvatarGroup size={16}>
-							{event.users.map((user) => (
+							{/* {event.users.map((user) => (
 								// eslint-disable-next-line react/jsx-props-no-spreading
-								<Avatar key={user.src} {...user} />
-							))}
+								// <Avatar key={user.src} {...user} />
+							))} */}
 						</AvatarGroup>
 					</div>
 				)}
@@ -339,7 +339,7 @@ const CalendarPage = () => {
 								trigger='hover'
 								desc={
 									<>
-										<div className='h6'>{`${USERS[u].name} ${USERS[u].surname}`}</div>
+										<div className='h6'>{`${USERS[u].name}`}</div>
 										<div>
 											<b>Event: </b>
 											{
@@ -622,9 +622,9 @@ const CalendarPage = () => {
 												ariaLabel='Employee select'>
 												{Object.keys(USERS).map((u) => (
 													<Option
-														key={USERS[u].id}
+														key={USERS[u].uid}
 														value={USERS[u].username}>
-														{`${USERS[u].name} ${USERS[u].surname}`}
+														{`${USERS[u].name}`}
 													</Option>
 												))}
 											</Select>

@@ -12,7 +12,6 @@ import Logo from '../../../components/Logo';
 import useDarkMode from '../../../hooks/useDarkMode';
 import { useFormik } from 'formik';
 import AuthContext from '../../../contexts/authContext';
-import USERS, { getUserDataWithUsername } from '../../../common/data/userDummyData';
 import Spinner from '../../../components/bootstrap/Spinner';
 import Alert from '../../../components/bootstrap/Alert';
 import validator from 'validator';
@@ -42,7 +41,7 @@ interface ILoginProps {
 	isSignUp?: boolean;
 }
 const Login: FC<ILoginProps> = ({ isSignUp }) => {
-	const { setUser } = useContext(AuthContext);
+	const { setUid } = useContext(AuthContext);
 
 	const { darkModeStatus } = useDarkMode();
 
@@ -60,8 +59,8 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 	const loginformik = useFormik({
 		enableReinitialize: true,
 		initialValues: {
-			loginUsername: USERS.JOHN.username,
-			loginPassword: USERS.JOHN.password,
+			loginUsername: '',
+			loginPassword: '',
 		},
 		validate: (values) => {
 			const errors: { loginUsername?: string; loginPassword?: string } = {};
@@ -85,9 +84,9 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 				}).
 					then(response => {
 					if(response.status == 200)
-					   {
-						if (setUser) {
-							setUser(values.loginUsername);
+					   { 
+						if (setUid) {
+							setUid(response.data);
 						}
 						handleOnClick();
 					   }
@@ -103,17 +102,17 @@ const Login: FC<ILoginProps> = ({ isSignUp }) => {
 	const handleContinue = () => {
 		setIsLoading(true);
 		setTimeout(() => {
-			if (
-				!Object.keys(USERS).find(
-					(f) => USERS[f].username.toString() === loginformik.values.loginUsername,
-				)
-			) {
-				setSignInPassword(true);
-				console.log();
-				//formik.setFieldError('loginUsername', 'No such user found in the system.');
-			} else {
-				setSignInPassword(true);
-			}
+			// if (
+			// 	!Object.keys(USERS).find(
+			// 		(f) => USERS[f].username.toString() === loginformik.values.loginUsername,
+			// 	)
+			// ) {
+			// 	setSignInPassword(true);
+			// 	console.log();
+			// 	//formik.setFieldError('loginUsername', 'No such user found in the system.');
+			// } else {
+			setSignInPassword(true);
+			//}
 			setIsLoading(false);
 		}, 1000);
 	};

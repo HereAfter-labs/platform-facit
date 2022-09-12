@@ -1,5 +1,5 @@
 import React from 'react';
-import USERS from '../../../common/data/userDummyData';
+import USERS from '../../../contexts/UserData';
 import { pages } from '../../../menu';
 import UserContact from '../../../components/UserContact';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +9,7 @@ const CommonDashboardUserCard = () => {
 
 	return (
 		<UserContact
-			name={`${USERS.SAM.name} ${USERS.SAM.surname}`}
+			name={`${USERS.SAM.name}`}
 			position='Team Lead'
 			mail={`${USERS.SAM.username}@site.com`}
 			phone='1234567'

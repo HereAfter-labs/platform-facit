@@ -1,4 +1,4 @@
-import USERS, { IUserProps } from './userDummyData';
+import USERS, { IUserProps } from '../../contexts/UserData';
 
 export interface IMessages {
 	id: number;

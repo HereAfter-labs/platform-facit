@@ -9,27 +9,22 @@ import { pages } from '../../../menu';
 import CommonUpcomingEvents from '../../common/CommonUpcomingTasks';
 import useDarkMode from '../../../hooks/useDarkMode';
 
-const AppointmentList = () => {
+const TodoList = () => {
 	const { themeStatus } = useDarkMode();
 	return (
 		//<PageWrapper title={demoPages.appointment.subMenu.appointmentList.text}>
 		<PageWrapper title=''>
-			<SubHeader>
+			{/* <SubHeader>
 				<SubHeaderLeft>
 					<Icon icon='Info' className='me-2' size='2x' />
 					<span className='text-muted'>
-						You have <Icon icon='TaskAlt' color='success' className='mx-1' size='lg' />{' '}
+						{/* You have <Icon icon='TaskAlt' color='success' className='mx-1' size='lg' />{' '}
 						3 approved appointments and{' '}
 						<Icon icon='Alarm' color='warning' className='mx-1' size='lg' /> 4 pending
 						appointments for today.
 					</span>
 				</SubHeaderLeft>
-				<SubHeaderRight>
-					<Button color={themeStatus}>
-						{moment().format('MMM Do')} - {moment().add(7, 'days').format('MMM Do')}
-					</Button>
-				</SubHeaderRight>
-			</SubHeader>
+			</SubHeader>  */}
 			<Page container='fluid'>
 				<div className='row h-100'>
 					<div className='col-12'>
@@ -41,4 +36,4 @@ const AppointmentList = () => {
 	);
 };
 
-export default AppointmentList;
+export default TodoList;

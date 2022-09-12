@@ -13,7 +13,7 @@ import Dropdown, {
 	DropdownToggle,
 } from '../../../components/bootstrap/Dropdown';
 import Button from '../../../components/bootstrap/Button';
-import USERS from '../../../common/data/userDummyData';
+import USERS from '../../../contexts/UserData';
 import useDarkMode from '../../../hooks/useDarkMode';
 import { TColor } from '../../../type/color';
 import Chart, { IChartOptions } from '../../../components/extras/Chart';
@@ -173,55 +173,55 @@ const CommonDashboardWaitingAnswer = () => {
 			<CardBody>
 				<div className='row g-3'>
 					<AnswerCustomer
-						id={USERS.GRACE.id}
+						id={USERS.GRACE.uid}
 						img={USERS.GRACE.src}
 						imgWebp={USERS.GRACE.srcSet}
-						name={`${USERS.GRACE.name} ${USERS.GRACE.surname}`}
+						name={`${USERS.GRACE.name}`}
 						color={USERS.GRACE.color}
 						job='Maryland'
 						value={43}
 					/>
 					<AnswerCustomer
-						id={USERS.JANE.id}
+						id={USERS.JANE.uid}
 						img={USERS.JANE.src}
 						imgWebp={USERS.JANE.srcSet}
-						name={`${USERS.JANE.name} ${USERS.JANE.surname}`}
+						name={`${USERS.JANE.name}`}
 						color={USERS.JANE.color}
 						job='North Carolina'
 						value={35}
 					/>
 					<AnswerCustomer
-						id={USERS.RYAN.id}
+						id={USERS.RYAN.uid}
 						img={USERS.RYAN.src}
 						imgWebp={USERS.RYAN.srcSet}
-						name={`${USERS.RYAN.name} ${USERS.RYAN.surname}`}
+						name={`${USERS.RYAN.name}`}
 						color={USERS.RYAN.color}
 						job='Rhode Island'
 						value={27}
 					/>
 					<AnswerCustomer
-						id={USERS.ELLA.id}
+						id={USERS.ELLA.uid}
 						img={USERS.ELLA.src}
 						imgWebp={USERS.ELLA.srcSet}
-						name={`${USERS.ELLA.name} ${USERS.ELLA.surname}`}
+						name={`${USERS.ELLA.name}`}
 						color={USERS.ELLA.color}
 						job='Washington'
 						value={15}
 					/>
 					<AnswerCustomer
-						id={USERS.CHLOE.id}
+						id={USERS.CHLOE.uid}
 						img={USERS.CHLOE.src}
 						imgWebp={USERS.CHLOE.srcSet}
-						name={`${USERS.CHLOE.name} ${USERS.CHLOE.surname}`}
+						name={`${USERS.CHLOE.name}`}
 						color={USERS.CHLOE.color}
 						job='Kentucky'
 						value={12}
 					/>
 					<AnswerCustomer
-						id={USERS.SAM.id}
+						id={USERS.SAM.uid}
 						img={USERS.SAM.src}
 						imgWebp={USERS.SAM.srcSet}
-						name={`${USERS.SAM.name} ${USERS.SAM.surname}`}
+						name={`${USERS.SAM.name}`}
 						color={USERS.SAM.color}
 						job='Michigan'
 						value={12}

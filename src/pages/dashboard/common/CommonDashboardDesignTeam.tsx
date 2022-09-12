@@ -9,7 +9,7 @@ import Card, {
 } from '../../../components/bootstrap/Card';
 import Button from '../../../components/bootstrap/Button';
 import Avatar, { AvatarGroup } from '../../../components/Avatar';
-import USERS from '../../../common/data/userDummyData';
+import USERS from '../../../contexts/UserData';
 import { useNavigate } from 'react-router-dom';
 import { pages } from '../../../menu';
 import useDarkMode from '../../../hooks/useDarkMode';
@@ -49,25 +49,25 @@ const CommonDashboardDesignTeam = () => {
 					<Avatar
 						srcSet={USERS.JANE.srcSet}
 						src={USERS.JANE.src}
-						userName={`${USERS.JANE.name} ${USERS.JANE.surname}`}
+						userName={`${USERS.JANE.name} `}
 						color={USERS.JANE.color}
 					/>
 					<Avatar
 						srcSet={USERS.JOHN.srcSet}
 						src={USERS.JOHN.src}
-						userName={`${USERS.JOHN.name} ${USERS.JOHN.surname}`}
+						userName={`${USERS.JOHN.name} `}
 						color={USERS.JOHN.color}
 					/>
 					<Avatar
 						srcSet={USERS.ELLA.srcSet}
 						src={USERS.ELLA.src}
-						userName={`${USERS.ELLA.name} ${USERS.ELLA.surname}`}
+						userName={`${USERS.ELLA.name}`}
 						color={USERS.ELLA.color}
 					/>
 					<Avatar
 						srcSet={USERS.RYAN.srcSet}
 						src={USERS.RYAN.src}
-						userName={`${USERS.RYAN.name} ${USERS.RYAN.surname}`}
+						userName={`${USERS.RYAN.name}`}
 						color={USERS.RYAN.color}
 					/>
 				</AvatarGroup>
