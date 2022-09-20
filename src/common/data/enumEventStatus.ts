@@ -7,7 +7,6 @@ export interface IEventStatus {
 const EVENT_STATUS: IEventStatus = {
 	RESOLVED: { name: 'Resolved', color: COLORS.SUCCESS.name },
 	HANDSON: { name: 'Hands On', color: COLORS.WARNING.name },
-	CANCELED: { name: 'Canceled', color: COLORS.DANGER.name },
-	REJECTED: { name: 'Rejected', color: COLORS.DARK.name },
+	TODO: { name: 'To Do', color: COLORS.PRIMARY.name }
 };
 export default EVENT_STATUS;

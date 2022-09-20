@@ -40,18 +40,19 @@ const WithListChatPage = () => {
 		SAM: USERS.SAM,
 	};
 
-	const [teamUsers, setteamUsers] = useState<Array<IUserProps | SetStateAction<null>>>();
+	const [teamUsers, setteamUsers] = useState(Array<IUserProps>);
 
 	const fetchUsers = useCallback(async () => {
 		const res = await axios.get('https://api.heynova.work/users');
 		if(res.status == 200)
-			//var user: IUserProps = {}
-			setteamUsers(Array());
+			{setteamUsers(Array());}
+		else
+			{setteamUsers(Array());}
 	  }, [])
 
 	useEffect(() => {
-		if (teamUsers !== []) {
-			fetchUsers().catch((error) => console.log(error));
+		if (teamUsers.length === 0) {
+			fetchUsers().catch((error) => {console.log(error);});
 		} else {
 			setteamUsers(Array());
 		}
@@ -134,7 +135,9 @@ const WithListChatPage = () => {
 										</CardHeader>
 										<CardBody className='border-bottom border-light'>
 											<div className='row'>
-												{ teamUsers.map((user) => (
+												{ teamUsers
+												   .filter(user => user.isOnline)
+												   .map((user) => (
 												<ChatListItem
 													onClick={() => getListShow(TABS.CHLOE)}
 													isActive={activeTab === TABS.CHLOE}
@@ -162,41 +165,24 @@ const WithListChatPage = () => {
 										</CardHeader>
 										<CardBody>
 											<div className='row'>
+											{ teamUsers
+											    .filter(user => !user.isOnline)
+											    .map((user) => (
 												<ChatListItem
-													onClick={() => getListShow(TABS.RYAN)}
-													isActive={activeTab === TABS.RYAN}
-													src={USERS.RYAN.src}
-													srcSet={USERS.RYAN.srcSet}
-													name={USERS.RYAN.name}
-													isOnline={USERS.RYAN.isOnline}
-													color={USERS.RYAN.color}
-													lastSeenTime={moment().add(-3, 'day').fromNow()}
-													latestMessage='Vivamus fermentum dui sit amet orci interdum pulvinar.'
-												/>
-												<ChatListItem
-													onClick={() => getListShow(TABS.ELLA)}
-													isActive={activeTab === TABS.ELLA}
-													src={USERS.ELLA.src}
-													srcSet={USERS.ELLA.srcSet}
-													name={USERS.ELLA.name}
-													isOnline={USERS.ELLA.isOnline}
-													color={USERS.ELLA.color}
-													lastSeenTime={moment().fromNow()}
-													latestMessage='Eleifend sagittis!'
-												/>
-												<ChatListItem
-													onClick={() => getListShow(TABS.SAM)}
-													isActive={activeTab === TABS.SAM}
-													src={USERS.SAM.src}
-													srcSet={USERS.SAM.srcSet}
-													name={USERS.SAM.name}
-													isOnline={USERS.SAM.isOnline}
-													color={USERS.SAM.color}
+													onClick={() => getListShow(TABS.CHLOE)}
+													isActive={activeTab === TABS.CHLOE}
+													src={UserImage6}
+													srcSet={UserImage6Webp}
+													name={user.name}
+													isOnline={true}
+													color={"light"}
 													lastSeenTime={moment()
-														.add(-5, 'week')
+														.add(-1, 'week')
 														.fromNow()}
-													latestMessage='Pellentesque a massa at magna laoreet luctus sed dignissim erat.'
-												/>
+													latestMessage={
+														"I think it's really starting to shine."
+													}
+												/>))}
 											</div>
 										</CardBody>
 									</Card>

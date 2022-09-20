@@ -30,23 +30,36 @@ import Checks from '../../components/bootstrap/forms/Checks';
 import Popovers from '../../components/bootstrap/Popovers';
 import data from '../../common/data/dummyTasksData';
 import EVENT_STATUS from '../../common/data/enumEventStatus';
+import IEventStatus from '../../common/data/enumEventStatus';
+
 import axios from 'axios';
 
 import PaginationButtons, { dataPagination, PER_COUNT } from '../../components/PaginationButtons';
 import useSortableData from '../../hooks/useSortableData';
 import useDarkMode from '../../hooks/useDarkMode';
 
+const status_map = {"hands on":"HANDSON", "resolved":"RESOLVED", "todo":"TODO"}
+
 export class Task {
 	taskid?: number;
 	taskname: string;
 	duedate?: Date;
 	userid?: number;
-	status?: string;
+	status?: any;//todo: more spec
 	constructor(uid: number, taskname: string, duetime: string, status: string) {
 		this.userid = uid;
 		this.taskname = taskname;
-		this.duedate = new Date(Number(duetime)  * 1000);
-		this.status = status;
+		if(duetime != null) 
+			this.duedate = new Date(parseInt(duetime)  * 1000);
+		else
+			this.duedate = new Date();
+		if(status in status_map)
+		    {
+				let es = status_map[status];
+				this.status = EVENT_STATUS[es];
+			}
+		else
+		this.status = EVENT_STATUS["TODO"];
 	  }
 }
 
@@ -97,7 +110,7 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 		   .then(response => {
 					console.log(response);
 					setTasks(response.data.map((item) => 
-							(new Task(item.userid, item.task_name, item.duetime, item.status))))});
+							(new Task(parseInt(uid), item.task_name, item.due_time, item.status))))});
 	  }, [])
 
 	useEffect(() => {
@@ -107,6 +120,11 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 			setTasks([]);
 		}
 	}, [fetchTasks]);
+
+	function checkWeek(date){
+	    let nextWeek = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 7);
+		return date <= nextWeek && date >= startDate
+    }
 
 	return (
 		<>
@@ -163,9 +181,7 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 					
 						 <tbody>
 							{dataPagination(tasks, currentPage, perPage)
-							  .filter(task => allTasksScope || (task.duedate.getFullYear() <= startDate.getFullYear() && 
-							  									task.duedate.getMonth() <= startDate.getMonth() && 
-																task.duedate.getDate() <= startDate.getDate()))
+							  .filter(task => allTasksScope || (checkWeek(task.duedate)))
 							    .map((item) => (
 								<tr key={item.id}>
 									<td>
@@ -189,7 +205,7 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 													color={item.status.color}
 													icon='Circle'
 													className='text-nowrap'>
-													{item.status}
+													{item.status.name}
 												</Button>
 											</DropdownToggle>
 											<DropdownMenu>
@@ -225,13 +241,11 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 													`bg-${item.status.color}`,
 												)}>
 												<span className='visually-hidden'>
-													{item.status}
+													{item.status.name}
 												</span>
 											</span>
 											<span className='text-nowrap'>
-												{item.duedate.format(
-													'MMM Do YYYY, a',
-												)}
+											    {item.duedate.getDate()} {new Intl.DateTimeFormat('en-US', {month:'long'}).format(startDate)}
 											</span>
 										</div>
 									</td>
