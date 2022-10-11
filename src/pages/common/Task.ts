@@ -3,4 +3,5 @@ export class Task {
 	duedate?: Date;
 	userid?: number;
 	status?: string;
+	list?: string;
 }
