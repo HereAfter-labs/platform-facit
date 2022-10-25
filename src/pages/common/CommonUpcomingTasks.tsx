@@ -1,6 +1,7 @@
 import React, { FC, useRef, useState, useEffect, useContext, useCallback } from 'react';
 import classNames from 'classnames';
 import moment from 'moment';
+import Popup from '../../components/Popup';
 import { FormikHelpers, useFormik, useFormikContext } from 'formik';
 import Card, {
 	CardActions,
@@ -24,6 +25,7 @@ import OffCanvas, {
 	OffCanvasHeader,
 	OffCanvasTitle,
 } from '../../components/bootstrap/OffCanvas';
+
 import FormGroup from '../../components/bootstrap/forms/FormGroup';
 import Input from '../../components/bootstrap/forms/Input';
 import AuthContext from '../../contexts/authContext';
@@ -38,12 +40,7 @@ import IEventStatus from '../../common/data/enumEventStatus';
 import axios from 'axios';
 
 import PaginationButtons, { dataPagination, PER_COUNT } from '../../components/PaginationButtons';
-import useSortableData from '../../hooks/useSortableData';
 import useDarkMode from '../../hooks/useDarkMode';
-import { NoTransfer } from '../../components/icon/material-icons';
-import { networkInterfaces } from 'os';
-import { isTemplateLiteralToken } from 'typescript';
-
 const status_map = {"hands on":"HANDSON", "resolved":"RESOLVED", "todo":"TODO"}
 
 export class Task {
@@ -54,14 +51,15 @@ export class Task {
 	status?: any;
 	list?: string;
 	notes?: string;
-	constructor(uid: number, taskid:number,
+    onserver?: boolean;
+	constructor(uid:number, taskid:number,
 				taskname: string, duetime = '', 
-				status = 'todo', list = 'All', notes = '') {
+				status = 'todo', list = 'All', notes = '', onserver=false) {
 		this.userid = uid;
 		this.taskid = taskid;
 		this.taskname = taskname;
-		if(duetime != null) 
-			this.duedate = new Date(parseInt(duetime)  * 1000);
+		if(duetime != '') 
+			this.duedate = new Date(parseInt(duetime));
 		else
 			this.duedate = new Date();
 		if(status in status_map)
@@ -70,10 +68,16 @@ export class Task {
 				this.status = EVENT_STATUS[es];
 			}
 		else
-		this.status = EVENT_STATUS["TODO"];
+			this.status = EVENT_STATUS["TODO"];
 		this.list = list;
 		this.notes = notes;
+		this.onserver = onserver;
 	  }
+}
+
+function copyTask(t: Task): Task {
+	return new Task(t.userid, t.taskid, t.taskname, 
+					t.duedate.getTime().toString(), t.status, t.list, t.notes, t.onserver);
 }
 
 interface ICommonUpcomingTasksProps {
@@ -88,11 +92,16 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 		setUpcomingTasksInfoOffcanvas(!upcomingTasksInfoOffcanvas);
 	};
 
-	const [allTasksScope, setallTasksScope] = useState(false);
+	const [scope, setscope] = useState("All");
 
-	const [startDate, setstartDate] = useState(new Date());
+	const [nTaskId, setnTaskId] = useState(0);
 
-	const [selectedTask, setselectedTask] = useState(new Task(0,0,''));
+	const [uid] = useState<string>(localStorage.getItem('facit_authUid') || '');
+
+	const [buttonPopup, setbuttonPopup] = useState(false);
+
+	const [selectedTask, setselectedTask] = useState(new Task(0, -1, '', '',
+													'', "Personal", "", false ));
 
 	const [upcomingTasksEditOffcanvas, setUpcomingTasksEditOffcanvas] = useState(false);
 	const handleUpcomingEdit = () => {
@@ -106,75 +115,143 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 	const updateSelectedTask = (task: Task) => {
 		formik.setFieldValue("taskname", task.taskname);
 		formik.setFieldValue("duedate", task.duedate);
-		formik.setFieldValue("list", task.list);
+		setSelectedList(task.list);
 		formik.setFieldValue("notes", task.notes);
 		setselectedTask(task);
 	}
 
+
+	const findTaskIdx = (tidx: number) => {
+		for(let [k, t] of Object.entries(tasks))
+		{
+			if(t.taskid == tidx)
+				return parseInt(k)
+		}
+	}
+
+	const saveSelectedTask = (task: Task) => {
+		let tidx = findTaskIdx(task.taskid);
+		if(tidx != -1)
+			{
+				const newTasks = tasks.map((t, i) => {
+					if (i === tidx) {
+					  return task;
+					} else {
+					  return t;
+					}
+				  });
+				  setTasks(newTasks);
+			}
+		else
+			{
+				setTasks(tasks.concat([task]));
+			}	
+	}
+	
 	const formik = useFormik({
 		onSubmit: (values) => {
-			axios.post('https://api.heynova.work/task/create',{
-				taskid: selectedTask.taskid,
-				uid: selectedTask.userid,
-				taskname: values.taskname,
-				duedate: values.duedate,
-				list: values.list,
-				notes: values.notes
-				}).
-				then(response => {
-					if(response.status == 200)
-					   { 
-						console.log('post task successful');
-					   }
-					})
-					.catch(error => {console.log(error); }); 
+			if(!selectedTask.onserver)
+				{
+				axios.post('https://api.heynova.work/task/create',{
+					creator: uid,
+					task_name: values.taskname,
+					create_time: new Date().getTime().toString(),
+					due_time: new Date(values.duedate).getTime().toString(),
+					//assignes: [],
+					task_text: "",
+					task_list: selectedList,
+					task_notes: values.notes
+					}).
+					then(response => {
+						if(response.status == 200)
+						{ 
+							console.log('post task successful');
+							saveSelectedTask(new Task(parseInt(uid), selectedTask.taskid, values.taskname, 
+															new Date(values.duedate).getTime().toString(),
+															selectedTask.status, selectedList, values.notes, true));
+						}
+						})
+						.catch(error => {console.log(error); }); 
+				}
+			else{
+				axios.put('https://api.heynova.work/task/update?task_id=' + selectedTask.taskid,{
+					creator: uid,
+					task_name: values.taskname,
+					create_time: new Date().getTime().toString(),
+					due_time: new Date(values.duedate).getTime().toString(),
+					task_text: "",
+					task_list: selectedList,
+					task_notes: values.notes
+					}).
+					then(response => {
+						if(response.status == 200)
+						{ 
+							console.log('put task successful');
+							saveSelectedTask(new Task(parseInt(uid), selectedTask.taskid, values.taskname, 
+															new Date(values.duedate).getTime().toString(),
+															selectedTask.status, selectedList, values.notes, true));
+						}
+						})
+						.catch(error => {console.log(error); }); 
+			}
 		},
 		initialValues: {
 			duedate: selectedTask.duedate,
 			taskname: selectedTask.taskname,
 			notes: selectedTask.notes,
-			list: selectedTask.list,
 		},
 	});
 
 	const [currentPage, setCurrentPage] = useState(1);
 	const [perPage, setPerPage] = useState(PER_COUNT['5']);
-	//const { items, requestSort, getClassNamesFor } = useSortableData(data);
 	const [tasks, setTasks] = useState(Array<Task>);
-	const [newListName] = useState('');
-	const [uid] = useState<string>(localStorage.getItem('facit_authUid') || '');
 
-	const Checkbox = ({id}) => {
-		const [isChecked, setisChecked] = useState(false);
+	const Checkbox = ({tid, taskdone}) => {
+		const [isChecked, setisChecked] = useState(taskdone);
 		const strike = "text-decoration:line-through"
 		return (
 		  <div className="checkbox-wrapper">
 			<label>
-			  <input id={id} 
+			  <input id={tid} 
 			         type="checkbox" 
 					 checked={isChecked} 
-					 onChange={() => {  if(!isChecked){
-											document.getElementById('taskname-' + String(id)).setAttribute("style", strike);
+					 onChange={() => { 
+					    let t = tasks[findTaskIdx(tid)];
+						axios.patch('https://api.heynova.work/task/status?task_id=' + tid, 
+													{task_status: isChecked ? 'todo' : 'resolved'}).
+							then(response => {
+								if(response.status == 200)
+								{   
+									let newt = copyTask(t);
+									newt.status = isChecked ? EVENT_STATUS["TODO"] : EVENT_STATUS["RESOLVED"];
+									console.log('patch task successful');
+									saveSelectedTask(newt);
+									if(!isChecked){
+										document.getElementById('tr-' + String(tid)).setAttribute("style", strike);
 										}
-										else{
-									        document.getElementById('taskname-' + String(id)).setAttribute("style", "");
+									else{
+										document.getElementById('tr-' + String(tid)).setAttribute("style", "");
 										}
-										setisChecked(!isChecked); }}
+									setisChecked(!isChecked);
+								}
+								})
+								.catch(error => {console.log(error); });  }}
 			/>
 			</label>
 		  </div>
 		);
 	  };
+	
+
 
 	const fetchTasks = useCallback(async () => {
 		const res = await axios.get('https://api.heynova.work/task/get?user_id=' + uid)
 		   .then(response => {
 					console.log(response);
 					setTasks(response.data.map((item) => 
-							(new Task(parseInt(uid), item.task_id, item.task_name, item.due_time, item.status, item.list))))
-							let firstTask = response.data[0];
-							updateSelectedTask(new Task(parseInt(uid), firstTask.task_id, firstTask.task_name, firstTask.due_time, firstTask.status, firstTask.list));});	
-	  }, [])
+							(new Task(parseInt(uid), item.task_id, 
+							          item.task_name, item.due_time, 
+									  item.status, item.task_list, item.notes, true))));})}, [])
 
 	useEffect(() => {
 		if (uid !== '') {
@@ -184,80 +261,105 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 		}
 	}, [fetchTasks]);
 
+	useEffect(() => {
+		setnTaskId(Math.max(...tasks.map(t => t.taskid)) + 1);
+	}, [tasks.length]);
+
+	useEffect(() => {
+		if(selectedTask.taskid == -1 && tasks.length > 0)
+			setselectedTask(tasks[0]);
+	}, [tasks]);
+
+	useEffect(() => {
+		updateTable();
+	  }, [scope, tasks, currentPage, perPage]);
+	
+	useEffect(() => {
+		// TODO:change it to dynamic creation
+		const newbgColors = {"All": scope == "All" ? 'grey': 'white',
+						 	"Personal": scope == "Personal" ? 'grey': 'white',
+							"Work":scope == "Work" ? 'grey': 'white'}
+		setbgColors(newbgColors);
+	  }, [scope]);
+
 	const [table, setTable] = useState([]);
 
-	const colorMap = {'All':'primary', 'Personal':'info', 'Work':'warning'}
+	const [list_dropdown, setList_dropdown] = useState([]);
 
-	const [lists, setLists] = useState(['All', 'Personal', 'Work']);
+	const [bgColors, setbgColors] = useState({"All": 'white',"Personal":'white',"Work":'white'});
+
+	const colorMap = {'Personal':'info', 'Work':'warning'}
+
+	const [lists, setLists] = useState(['Personal', 'Work']);
 
 	const [selectedList, setSelectedList] = useState(selectedTask.list);
 
+	const [newList, setnewList] = useState('');
+
     useEffect(() => {updateTable();},[tasks.length]);
 
+    function getDeadlineText(date: Date){
+		const tomorrow = new Date();
+  		tomorrow.setDate(tomorrow.getDate() + 1);
+		if(tomorrow.toDateString() === date.toDateString()){
+			return 'tomorrow';
+		}
+		else if(new Date().toDateString() === date.toDateString()){
+			return 'today';
+		}
+		return date.toDateString();
+	}
+
+	useEffect(() => {
+		updateDropdown()
+	},[lists])
+
+	function updateDropdown(){
+		let dropdown = lists.map((list_item) => (
+			<DropdownItem key={list_item} onClick={() => setSelectedList(list_item)}>
+				<div>
+				<Icon
+					icon='Circle'
+					color={colorMap[list_item]}
+					/>
+					{list_item}
+				</div>
+			</DropdownItem>
+		))
+		setList_dropdown(dropdown);
+	}
+
+	function deleteTask(tid: number){
+		axios.delete('https://api.heynova.work/task/delete?task_id=' + tid).
+			then(response => {
+				if(response.status == 200 || response.status == 203 )
+					{ 
+						console.log('delete task successful');
+						let idx = findTaskIdx(tid);
+						if(idx != -1)
+						{
+							setTasks(tasks.filter((t, i) => idx !== i ));
+							updateSelectedTask(new Task(parseInt(uid), 0, "", new Date().getTime().toString()))
+						}
+					}})
+			.catch(error => {console.log(error); }); 
+	}
+
     function updateTable() {
-		let _tasks = dataPagination(tasks, currentPage, perPage).filter(task => allTasksScope || (checkWeek(task.duedate)))
-		// let ekeys = editors;
-		//   for(let task of tasks){
-		// 	    if(!(task.taskid in ekeys))
-		// 		{
-		// 			let editableText = useRef(null);
-		// 			ekeys[task.taskid] = editableText
-		// 	}
-		//   }
-		//setEditors(ekeys);
+		let _tasks = dataPagination(tasks.filter(task => (scope == "All") || (scope == task.list)), currentPage, perPage)
 		let todo_table = _tasks.map((item) => (
-			  <tr key={item.taskid} onClick={() => updateSelectedTask(item)}>
-				  {/* <td>
-					  <Button
-						  isOutline={!darkModeStatus}
-						  color='dark'
-						  isLight={darkModeStatus}
-						  className={classNames({
-							  'border-light': !darkModeStatus,
-						  })}
-						  icon='Info'
-						  onClick={handleUpcomingDetails}
-						  aria-label='Detailed information'
-					  />
-				  </td> */}
+			  <tr key={item.taskid} id={'tr-' + item.taskid} onClick={() => updateSelectedTask(item)}>
 				<td>
-					   <Checkbox id = {item.taskid}/>
+					   <Checkbox tid = {item.taskid} taskdone={item.status.name != 'todo'}/>
 				</td>
 				  <td>
-					  <span id={'taskname-' + item.taskid} onClick={() => makeEditable(item.taskid)}>
+					  <span onClick={() => makeEditable(item.taskid)}>
 						  {item.taskname}
 					  </span>
 				  </td>
-				   {/* <td>
-					  <div className='d-flex align-items-center'>
-						  <span
-							  className={classNames(
-								  'badge',
-								  'border border-2',
-								  [`border-${themeStatus}`],
-								  'rounded-circle',
-								  'bg-success',
-								  'p-2 me-2',
-								  `bg-${item.status.color}`,
-							   )}>
-							  <span className='visually-hidden'>
-								  {item.status.name}
-							  </span>
-						  </span>
-						  <div className='col-4'>
-							<FormGroup id='date'>
-								<Input
-									onChange={formik.handleChange}
-									value={moment.utc(item.duedate).format('YYYY-MM-DD')}
-									type='date'
-								/>
-							</FormGroup>
-						</div>
-						    <span className='text-nowrap'>
-							  {item.duedate.getDate()} {new Intl.DateTimeFormat('en-US', {month:'long'}).format(startDate)}
-						  </span>  
-					  </div> 
-				  </td>  */}
+				  <td>
+					{getDeadlineText(item.duedate)}
+				</td>
 			  </tr>
 		  ))
 		  setTable(todo_table);
@@ -271,24 +373,25 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 		setLists(lists.concat([listname]));
 	}
 
-	function openNewList(){
-		document.getElementById('newListField').hidden = false;
-	}
-
-	function checkWeek(date){
-	    let nextWeek = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 7);
-		return date <= nextWeek && date >= startDate
-    }
+	// function checkWeek(date){
+	//     let nextWeek = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 7);
+	// 	return date <= nextWeek && date >= startDate
+    // }
 
 	function addNewTask(title='New Task'){
 	    let date = new Date();
-		let nt = new Task(0,0,title, String(Math.floor(date.getTime() / 1000)), 'todo', 'all');
+		let nt = new Task(parseInt(uid), nTaskId, title, String(Math.floor(date.getTime())), 'todo', 'Personal');
 		setTasks(tasks.concat([nt]));
 	}
 	
 	function handleInputChange(event){
 		setinputTitle(event.target.value);
 	}
+
+	function handlenewListChange(event){
+		setnewList(event.target.value);
+	}
+
 	
 	return (
 		<>
@@ -300,70 +403,62 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 						<CardTitle>To-do List</CardTitle>
 					</CardLabel>
 					<CardActions>
-						{/* <Button
-							color='info'
-							icon='CloudDownload'
-							isLight
-							tag='a'
-							to='/somefile.txt'
-							target='_blank'
-							download>
-							Export
-						</Button> */}
 						<Button 
-							style={{ color: allTasksScope ? '#ccccff' : themeStatus}}
-							onClick={() => {setallTasksScope(!allTasksScope);}}
+							style={{ color:themeStatus, background:bgColors["All"]}}
+							onClick={() => {setscope("All");}}
 							>
 							All
 						</Button>
 						<Button 
-							style={{ color: allTasksScope ? '#ccccff' : themeStatus}}
-							onClick={() => {setallTasksScope(!allTasksScope);}}
+							style={{color: themeStatus, background:bgColors["Personal"]}}
+							onClick={() => {setscope("Personal");}}
 							>
 							Personal
 						</Button>
 						<Button 
-							style={{ color: allTasksScope ? '#ccccff' : themeStatus}}
-							onClick={() => {setallTasksScope(!allTasksScope);}}
+							style={{ color: themeStatus, background:bgColors["Work"]}}
+							onClick={() => {setscope("Work");}}
 							>
 							Work
 						</Button>
 						<Button 
-							style={{ color: allTasksScope ? '#ccccff' : themeStatus}}
-							onClick={() => {openNewList();}}
+							style={{ color: themeStatus}}
+							onClick={() => {setbuttonPopup(true);}}
 							>
 							+New List
 						</Button>
-						<Input id='newListField' type='hidden' value={newListName}>
-						</Input>
-						{/* <Button icon='ArrowLeft' onClick={() => {setstartDate(new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() - 7));}}></Button> 
-						<Button color={themeStatus}>
-						    {startDate.getDate()} {new Intl.DateTimeFormat('en-US', {month:'long'}).format(startDate)}
-						</Button> 
-						<Button icon='ArrowRight' onClick={() => {setstartDate(new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 7));}}></Button> */}
+						<Popup trigger={buttonPopup} setTrigger={setbuttonPopup}>
+							<CardTitle>Create a list</CardTitle>
+								<Input type='text' 
+									value={newList}
+									onChange={handlenewListChange}>
+								</Input>
+							<div className="row">
+							<div className="col-6">
+								<Button
+									className="button"
+									onClick={() => {
+										addNewList(newList);
+										setbuttonPopup(false);
+									}}>
+									Create
+								</Button>
+									</div>
+									<div className="col-6">
+										<Button
+											className="button"
+											onClick={() => {
+												setbuttonPopup(false);
+											}}>
+											Cancel
+										</Button>
+									</div>
+								</div>
+						</Popup>
 					</CardActions>
 				</CardHeader>
 				<CardBody className='table-responsive' isScrollable={isFluid}>
 					<table className='table table-modern'>
-						{/* <thead>
-							<tr>
-								<td style={{ width: 50 }} />
-								 <th
-									onClick={() => requestSort('duedate')}
-									className='cursor-pointer text-decoration-underline'>
-									Date / Time{' '}
-									<Icon
-										size='lg'
-										className={getClassNamesFor('date')}
-										icon='FilterList'
-									/>
-								</th> 
-								<th>Status</th>
-								 <th>Task Name</th>
-								<th>Due Date</th>
-								<td />
-							</tr>
-						</thead> */}
 						 <tbody>
 							{table}
 						</tbody>
@@ -388,31 +483,8 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 				/>
 			</Card>
 			</div>
-
-			{/* <Card
-				setOpen={setUpcomingTasksInfoOffcanvas}
-				isOpen={upcomingTasksInfoOffcanvas}
-				titleId='upcomingDetails'
-				placement='bottom'>
-				<OffCanvasHeader setOpen={setUpcomingTasksInfoOffcanvas}>
-					<OffCanvasTitle id='upcomingDetails'>Customer: Alison Berry</OffCanvasTitle>
-				</OffCanvasHeader>
-				<OffCanvasBody>
-					<div className='row g-4'>
-						<div className='w-100' />
-					</div>
-				</OffCanvasBody>
-			</OffCanvas> */}
-
-
 			<div className="col-md-6">
-			<Card
-				//setOpen={setUpcomingTasksEditOffcanvas}
-				//isOpen={upcomingTasksEditOffcanvas}
-				//titleId='upcomingEdit'
-				//isBodyScroll
-				//placement='end'
-				>
+			<Card>
 				<CardHeader borderSize={1}>
 					<CardTitle>Edit Tasks</CardTitle>
 				</CardHeader>
@@ -434,10 +506,10 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 										type={'datetime-local'}
 										value={
 											moment(
-												formik.values.duedate).format(
-												moment.HTML5_FMT
-													.DATETIME_LOCAL,
-											)
+												formik.values.duedate,
+										  ).format(
+												moment.HTML5_FMT.DATETIME_LOCAL,
+										  )
 										}
 										onChange={formik.handleChange}
 									/>
@@ -458,18 +530,16 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 												</Button>
 											</DropdownToggle>
 											<DropdownMenu>
-											{lists.map((list_item) => (
-												<DropdownItem key={list_item}>
-													<div>
-													<Icon
+											{list_dropdown}
+											<DropdownItem key={"Create a list"} onClick={() => setbuttonPopup(true)}>
+												<div>
+												<Icon
 														icon='Circle'
-														color={colorMap[list_item]}
-														onClick={() => setSelectedList(list_item)}
+														color={'secondary'}
 														/>
-														{list_item}
-													</div>
-												</DropdownItem>
-											))}
+														Create a list
+											   </div>
+											</DropdownItem>
 											</DropdownMenu>
 										</Dropdown>
 						      </FormGroup>
@@ -484,40 +554,24 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 											/>
 										</FormGroup>
 							</div>
-						</div>
-						{/* <div className='col-4'>
-							<FormGroup id='list' label='List'> 
-							 <Dropdown>
-								<DropdownToggle hasIcon={false}>
-									{/* <Button
-										isLink
-										color={item.status.color}
-										icon='Circle'
-										className='text-nowrap'>
-										{item.status.name}
-									</Button> 
-									All
-								</DropdownToggle>
-								<DropdownMenu>
-									{lists.map((list_item) => (
-										<DropdownItem>
-											<div>
-												{list_item.name}
-											</div>
-										</DropdownItem>
-									))}
-								</DropdownMenu>
-							</Dropdown>
-						</FormGroup>
-						</div>*/}
+							
+					</div>				
 				</CardBody>
 				<div className='row m-0'>
-					<div className='col-12 p-3'>
+					<div className='col-6 p-3'>
 						<Button
 							color='info'
 							className='w-100'
 							onClick={() => {formik.handleSubmit()}}>
 							Save
+						</Button>
+					</div>
+					<div className='col-6 p-3'>
+						<Button
+							color='warning'
+							className='w-100'
+							onClick={() => {deleteTask(selectedTask.taskid)}}>
+							Delete
 						</Button>
 					</div>
 				</div>

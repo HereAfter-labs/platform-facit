@@ -1,0 +1,19 @@
+.popup{
+    position:fixed;
+    top:10;
+    left:40%;
+    background-color:rgba(187, 123, 225, 0.756);
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+    z-index:1039;
+}
+
+.popup-inner{
+    position: relative;
+    padding: 32px;
+    width: 100%;
+    max-width: 640px;
+    border-radius:4px;
+}
