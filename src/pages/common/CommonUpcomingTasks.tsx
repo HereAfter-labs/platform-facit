@@ -450,7 +450,7 @@ const CommonUpcomingTasks: FC<ICommonUpcomingTasksProps> = ({ isFluid }) => {
 											onClick={() => {
 												setbuttonPopup(false);
 											}}>
-											Cancel
+											Start Chatting!
 										</Button>
 									</div>
 								</div>

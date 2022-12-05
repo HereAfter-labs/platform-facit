@@ -14,18 +14,28 @@ import Card, {
 	CardSubTitle,
 	CardTitle,
 } from '../../../components/bootstrap/Card';
+import Popup from '../../../components/Popup';
+import {Message} from '../../../contexts/Message';
+import Select, { MultiValue } from "react-select";
+
+
+import '../../../components/Popup.css';
+
+import useDarkMode from '../../../hooks/useDarkMode';
+
+
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper';
 import Chat, { ChatAvatar, ChatGroup, ChatListItem } from '../../../components/Chat';
 import InputGroup from '../../../components/bootstrap/forms/InputGroup';
 import Textarea from '../../../components/bootstrap/forms/Textarea';
 import USERS, { IUserProps } from '../../../contexts/UserData';
+import { IConversation, ChannelConversation, MultiUserConversation } from '../../../contexts/Conversation';
+
 import Icon from '../../../components/icon/Icon';
 import ThemeContext from '../../../contexts/themeContext';
-import CHATS, { IMessages } from '../../../common/data/chatDummyData';
 import CommonChatStatus from '../../common/CommonChatStatus';
 import UserImage6 from '../../../assets/img/wanna/wanna6.png';
 import UserImage6Webp from '../../../assets/img/wanna/wanna6.webp';
-import { w3cwebsocket as W3CWebSocket } from "websocket";
 import axios from 'axios';
 import { FormikHelpers, useFormik, useFormikContext } from 'formik';
 import Input from '../../../components/bootstrap/forms/Input';
@@ -39,22 +49,28 @@ import Dropdown, {
 const WithListChatPage = () => {
 	const navigate = useNavigate();
 
-	const TABS: { [key: string]: IUserProps } = {
-		CHLOE: USERS.CHLOE,
-		GRACE: USERS.GRACE,
-		JANE: USERS.JANE,
-		RYAN: USERS.RYAN,
-		ELLA: USERS.ELLA,
-		SAM: USERS.SAM,
-	};
-
 	const [teamUsers, setteamUsers] = useState(Array<IUserProps>);
+
+	const [userOptions, setuserOptions] = useState([]);
+
+	const [selectedUserOptions, setselectedUserOptions] = useState([]);
 
 	const [channelUsers, setchannelUsers] = useState(new Set());
 
+	const [buttonPopup, setbuttonPopup] = useState(false);
+
+	useEffect(() => {
+		const closePopup = (e) => {
+			if(e.path[0].tagName !== 'BUTTON')
+				setbuttonPopup(false);
+		}
+		document.body.addEventListener('click', closePopup);
+		return () => document.body.removeEventListener('click', closePopup);
+	}, [])
+
 	function createUser(data_item){
 		const newUser : IUserProps = {isOnline: data_item.status == 1 ? true : false,
-									  uid: data_item.uid,
+									  uid: data_item.user,
 									  name: data_item.name};
 		return newUser;
 	};
@@ -63,8 +79,8 @@ const WithListChatPage = () => {
 		const res = await axios.get('https://api.heynova.work/team/user/get?team_id=1');
 		if(res.status == 200)
 			{
-				setteamUsers(res.data.users.map((item) => createUser(item)));
-				setChat(Object.fromEntries(res.data.users.map((u) => [u, []])));
+				setteamUsers(res.data.users.filter((item) => item.uid != uid).map((item) => createUser(item)));
+				//setChat(Object.fromEntries(res.data.users.map((u) => [u, []])));
 			}
 		else
 			{setteamUsers(Array());}
@@ -87,44 +103,56 @@ const WithListChatPage = () => {
 		}
 	}, [fetchUsers]);
 
+	useEffect(() => {
+		const opts = teamUsers.map((c) => ({value:c.name, label:c.name}));
+		setuserOptions(opts);
+		if(teamUsers[0] != undefined)
+			setActiveTab(new MultiUserConversation(1,[new Message(1,'hello', 1), new Message(2,'hi', 3)],[teamUsers[0]]));
+	}, [teamUsers]);
+
 	const [uid] = useState<string>(localStorage.getItem('facit_authUid') || '');
 
 	function sendMessage(msg:string){
 		axios.post('https://api.heynova.work/chat/post', 
 		{
 			"chat_sender": uid,
-			"chat_receiver": activeTab.uid,
+			"chat_receiver": activeTab.users.map((u) => u.uid),
 			"chat_line": msg
 		})
 		.then(response => {
 			if(response.status == 200)
 			{ 
-				const newMsg = Object.entries(chat).map((k,v) => {k : k == activeTab.uid ? v.concat([msg]) : v})
-				//messages[activeTab.uid].append({"message": msg, "id": uid});
-				setChat(newMsg);
+				//const newMsg = Object.entries(chat).map((k,v) => {k : k == activeTab.uid ? v.concat([msg]) : v})
+				//setChat(newMsg);
 			}
 			})
 			.catch(error => {console.log(error); }); 
 	}
 
-	const [activeTab, setActiveTab] = useState<IUserProps | SetStateAction<null>>(TABS.CHLOE);
+	const [activeTab, setActiveTab] = useState<IConversation>();
 
 	const [message, setMessage] = useState('');
+
+	const [chat, setChat] = useState<{}>();
 
 	const { mobileDesign } = useContext(ThemeContext);
 	const [listShow, setListShow] = useState<boolean>(true);
 
     const handleMessageChange = (event) => {
 		setMessage(event.target.value);
-	  };	  
+	  };
+	
+	const { themeStatus, darkModeStatus } = useDarkMode();
 		
 	const [newChannel, setnewChannel] = useState(false); // Sent and received messages
     
-	const getListShow = (TAB_NAME: IUserProps | SetStateAction<null>) => {
-		setActiveTab(TAB_NAME);
-		if (mobileDesign) {
-			setListShow(false);
-		}
+	const getListShow = (users: IUserProps[] ) => {
+		// for(let el of chat)
+		// 	if(el.users === users)
+		// 		setActiveTab(el);
+		// if (mobileDesign) {
+		// 	setListShow(false);
+		// }
 	};
 
 	const formik = useFormik({
@@ -135,6 +163,11 @@ const WithListChatPage = () => {
 			teamMembers: []
 		},
 	});
+
+	const handleChangeSelected = (e: MultiValue<IUserProps>): void => {
+		setselectedUserOptions(e.map((item) => item));
+	  };
+	
 	// useEffect(() => {
 	// 	const ws = new WebSocket("");
 
@@ -159,40 +192,29 @@ const WithListChatPage = () => {
 	// 	};}, []);
 
 	const [searchedName, setsearchedName] = useState("");
+
     
 	function handleSearch(event){
 		setsearchedName(event.target.value);
 	}
 
-	const statusMessage = {
-		subscribed: "Subscribed",
-		unsubscribed: "Unsubscribed"
-	  };
-	
-	const [listening, setListening] = useState(false);
-
-	const [chat, setChat] = useState({});
-
-	function updateChat(conv, uid2){
-		const newChat = Object.entries(chat).map(([k,v]) => k == uid2 ? conv : v);
-		setChat(newChat);
+	function updateChat(data, uid){
+		setChat(Object.fromEntries(Object.entries(chat).concat([(uid, data)])));
 	}
 
 	const subscribe = async () => {
-		const status = listening;
-		if (!status) {
-		   for(let u of teamUsers) {
-				const events = new EventSource("https://api.heynova.work/chat/get/id1=" + uid + 'id2=' + u.uid);
-				events.onmessage = event => {
-					const parsedData = JSON.parse(event.data);
-					updateChat(parsedData, u.uid);
-		   };
-		}
-		} else {
-		  //await axios.delete(`http://localhost:8000/closes/${process}`)
-		}
-		setListening(!listening);
-	  };
+		for(let u of teamUsers) {
+			const events = new EventSource("https://api.heynova.work/chat/get/id1=" + uid + '&id2=' + u.uid);
+			events.onmessage = event => {
+				const parsedData = JSON.parse(event.data);
+				updateChat(parsedData, u.uid);
+		};
+	}
+	};
+	
+	useEffect(() => {
+		subscribe();
+	}, [teamUsers]);
 
 	return (
 		//<PageWrapper title={demoPages.chat.subMenu.withListChat.text}>
@@ -224,6 +246,63 @@ const WithListChatPage = () => {
 			</SubHeader>
 			<Page>
 				<div className='row h-100'>
+				<Popup start_chat={true} trigger={buttonPopup} setTrigger={setbuttonPopup}>
+									<div
+										className={`md:bg-gray-200 w-fit md:px-2 py-[2.9px]  rounded-sm text-sm`}
+										>
+														To:
+													</div>
+													<Select
+														value={selectedUserOptions}
+														onChange={(e: MultiValue<IUserProps>) => {handleChangeSelected(e)}}
+														isClearable={false}
+														className="text-sm custom-select"
+														closeMenuOnSelect={false}
+														defaultValue={[]}
+														isMulti
+														options={userOptions}
+														placeholder="Select Users"
+														//@ts-ignore
+														components={{
+															DropdownIndicator: () => null,
+															IndicatorSeparator: () => null,
+														}}
+														styles={{
+															multiValue: (base) => ({
+															...base,
+															backgroundColor: "#e9ecef",
+															}),
+															container: (base) => ({
+															...base,
+															width: "100%",
+															}),
+															menuList: (base) => ({
+															...base,
+															maxWidth: 300,
+															}),
+														}}
+														/>
+													
+													   {/* <div className="name-list-container">
+														{teamUsers.filter((user) => user.name.toLowerCase().includes(PopupsearchedName.toLowerCase()))
+														.map((user) =>
+																<div style={{background: channelUsers.has(user) ? 'primary' : 'second'}}>
+																{user.name}
+																</div>)} </div> */}
+
+													<div className="row">
+														<div className="col-6">
+															<Button style = {{width:200}}
+																	className="button"
+																	onClick={() => {
+																		setbuttonPopup(false);
+																		getListShow(selectedUserOptions);
+																	}}>
+																	Start chatting!
+																</Button>
+															</div>
+														</div>
+												</Popup>
 					{(listShow || !mobileDesign) && (
 						<div className='col-lg-4 col-md-6'>
 							<Card stretch className='overflow-hidden'>
@@ -231,7 +310,7 @@ const WithListChatPage = () => {
 									<Card shadow='none' className='mb-0'>
 										<CardHeader className='sticky-top'>
 											<CardLabel icon='AccountCircle' iconColor='success'>
-												<Button>New Chat</Button>
+												<Button onClick={() => {setbuttonPopup(true);}}>New Chat</Button>
 											</CardLabel>
 											<Button onClick={() => setnewChannel(true)}>New Channel</Button>
 										</CardHeader>
@@ -241,8 +320,8 @@ const WithListChatPage = () => {
 												   .filter(user => user.isOnline)
 												   .map((user) => (
 												<ChatListItem
-													onClick={() => getListShow(TABS.CHLOE)}
-													isActive={activeTab === TABS.CHLOE}
+													onClick={() => getListShow([user])}
+													isActive={activeTab instanceof ChannelConversation ? false : activeTab.users.length == 1 && activeTab.users[0] === user}
 													src={UserImage6}
 													srcSet={UserImage6Webp}
 													name={user.name}
@@ -265,15 +344,15 @@ const WithListChatPage = () => {
 												<CardSubTitle>
 													{teamUsers.filter(user => !user.isOnline).length} users</CardSubTitle>
 											</CardLabel>
-										</CardHead
+										</CardHeader>
 										<CardBody>
 											<div className='row'>
 											{ teamUsers
 											    .filter(user => !user.isOnline)
 											    .map((user) => (
 												<ChatListItem
-													onClick={() => getListShow(user)}
-													isActive={activeTab === user}
+													onClick={() => getListShow([user])}
+													isActive={false}
 													src={UserImage6}
 													srcSet={UserImage6Webp}
 													name={user.name}
@@ -340,7 +419,7 @@ const WithListChatPage = () => {
 								<div className='row md-4'>
 									<div className='col-6'>
 								<Dropdown>
-									<DropdownToggle hasIcon={false}>
+									    <DropdownToggle hasIcon={false}>
 											<Input placeholder='Add team members'
 													value = {searchedName}
 													onChange={handleSearch}> 
@@ -376,11 +455,11 @@ const WithListChatPage = () => {
 								<CardHeader>
 									<CardActions>
 										<div className='d-flex align-items-center'>
-											<ChatAvatar
+											{/* <ChatAvatar
 												// eslint-disable-next-line react/jsx-props-no-spreading
 												{...activeTab}
 												className='me-3'
-											/>
+											/> */}
 											<div className='fw-bold'>
 												{activeTab
 													? `${'name' in activeTab && activeTab.name}`
@@ -391,25 +470,23 @@ const WithListChatPage = () => {
 								</CardHeader>
 								<CardBody isScrollable>
 									<Chat>
-										{activeTab && 
+									{activeTab &&
 											// @ts-ignore
-											(activeTab.uid in chat ? 
-											chat[activeTab.uid].map((msg) => (
+											activeTab.messages.map((msg) => (
 												<ChatGroup
-													key={String(msg.messages)}
-													messages={msg.messages}
-													user={msg.user}
-													isReply={msg.isReply}
+													key={activeTab.name}
+													messages={[msg]}
+													user={activeTab.users[0]}
+													isReply={String(msg.senderid) === uid}
 												/>
-											)) : (<></>)
-											)}
+											))}
 									</Chat>
 								</CardBody>
 								<CardFooter className='d-block'>
 									<InputGroup>
 										<Textarea value={message} onChange={handleMessageChange}/>
 										<Button color='info' icon='Send' onClick={() => sendMessage(message)}>
-											SEND
+											Send
 										</Button>
 									</InputGroup>
 								</CardFooter> 

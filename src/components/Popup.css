@@ -4,7 +4,7 @@
     left:40%;
     background-color:rgba(187, 123, 225, 0.756);
     display: flex;
-
+    border-radius: 25px;
     justify-content: center;
     align-items: center;
     z-index:1039;
@@ -16,4 +16,26 @@
     width: 100%;
     max-width: 640px;
     border-radius:4px;
+}
+
+.popup-start-chat{
+    position:fixed;
+    top:5;
+    left:40%;
+    width:max-content;
+    background-color:rgb(180 145 222);
+    display: flex;
+    border-radius: 25px;
+    justify-content: center;
+    align-items: center;
+    z-index:1500;
+}
+
+.name-list-container{
+    border:'2px solid black';
+    border-radius:25px;
+    width:190;
+    height:190;
+    overflow:'auto';
+    background:'primary'
 }
