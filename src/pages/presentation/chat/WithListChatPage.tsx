@@ -29,7 +29,7 @@ import Chat, { ChatAvatar, ChatGroup, ChatListItem } from '../../../components/C
 import InputGroup from '../../../components/bootstrap/forms/InputGroup';
 import Textarea from '../../../components/bootstrap/forms/Textarea';
 import USERS, { IUserProps } from '../../../contexts/UserData';
-import { IConversation, ChannelConversation, MultiUserConversation } from '../../../contexts/Conversation';
+import { IConversation, MultiUserConversation } from '../../../contexts/Conversation';
 
 import Icon from '../../../components/icon/Icon';
 import ThemeContext from '../../../contexts/themeContext';
@@ -45,11 +45,14 @@ import Dropdown, {
 	DropdownMenu,
 	DropdownToggle,
 } from '../../../components/bootstrap/Dropdown';
+import { getLineAndCharacterOfPosition } from 'typescript';
 
 const WithListChatPage = () => {
 	const navigate = useNavigate();
 
 	const [teamUsers, setteamUsers] = useState(Array<IUserProps>);
+
+	const [memberGroupIds, setMemberGroupIds] = useState(Array<number>);
 
 	const [userOptions, setuserOptions] = useState([]);
 
@@ -60,13 +63,10 @@ const WithListChatPage = () => {
 	const [buttonPopup, setbuttonPopup] = useState(false);
 
 	useEffect(() => {
-		const closePopup = (e) => {
-			if(e.path[0].tagName !== 'BUTTON')
-				setbuttonPopup(false);
+		if(!buttonPopup){
+			setselectedUserOptions([]);
 		}
-		document.body.addEventListener('click', closePopup);
-		return () => document.body.removeEventListener('click', closePopup);
-	}, [])
+	}, [buttonPopup])
 
 	function createUser(data_item){
 		const newUser : IUserProps = {isOnline: data_item.status == 1 ? true : false,
@@ -79,14 +79,14 @@ const WithListChatPage = () => {
 		const res = await axios.get('https://api.heynova.work/team/user/get?team_id=1');
 		if(res.status == 200)
 			{
-				setteamUsers(res.data.users.filter((item) => item.uid != uid).map((item) => createUser(item)));
-				//setChat(Object.fromEntries(res.data.users.map((u) => [u, []])));
+				setteamUsers(res.data.users.filter((item) => item.user != uid).map((item) => createUser(item)));
+				setChat(Object.fromEntries(res.data.users.map((u) => [u.user, []])));
 			}
 		else
 			{setteamUsers(Array());}
 	  }, []);
-	
-	function toggleChannelUser(user){
+
+	  function toggleChannelUser(user){
 		if(!channelUsers.has(user))
 			{
 				setchannelUsers(new Set(Array.from(channelUsers.values()).concat([user])));}
@@ -95,35 +95,58 @@ const WithListChatPage = () => {
 				setchannelUsers(new Set(Array.from(channelUsers.values()).filter((u) => u != user)));}
 	}
 
+	  const fetchGroupids = useCallback(async () => {
+		const res = await axios.get('https://api.heynova.work/chat/user/group/get?user_id=' + uid);
+		if(res.status == 200)
+			{
+				setMemberGroupIds(res.data);
+			}
+		else
+			{setMemberGroupIds(Array());}
+	  }, []);
+
 	useEffect(() => {
+		setChat({1: [new Message(1,'hello', 1), new Message(2,'hi', 3)]});
+		const nu : IUserProps = {isOnline:true, uid: "1", name: "admin"};
+		setActiveTab(new MultiUserConversation(1, 'group', 1, [new Message(1,'hello', 1), new Message(2,'hi', 3)], [
+			    nu
+		]));
 		if (teamUsers.length === 0) {
 			fetchUsers().catch((error) => {console.log(error);});
 		} else {
 			setteamUsers(Array());
 		}
-	}, [fetchUsers]);
+
+		if (memberGroupIds.length === 0) {
+			fetchGroupids().catch((error) => {console.log(error);});
+		} else {
+			setteamUsers(Array());
+		}
+
+	}, [fetchUsers, fetchGroupids]);
 
 	useEffect(() => {
-		const opts = teamUsers.map((c) => ({value:c.name, label:c.name}));
+		const opts = teamUsers.map((c) => ({value:c.name, label:c.name, uid:c.uid}));
 		setuserOptions(opts);
-		if(teamUsers[0] != undefined)
-			setActiveTab(new MultiUserConversation(1,[new Message(1,'hello', 1), new Message(2,'hi', 3)],[teamUsers[0]]));
+		//if(teamUsers[0] != undefined)
+		//	setActiveTab(new MultiUserConversation(1,[new Message(1,'hello', 1), new Message(2,'hi', 3)],[teamUsers[0]]));
 	}, [teamUsers]);
 
 	const [uid] = useState<string>(localStorage.getItem('facit_authUid') || '');
 
-	function sendMessage(msg:string){
-		axios.post('https://api.heynova.work/chat/post', 
+	function sendMessage(msg: string){
+		axios.post('https://api.heynova.work/chat/group/post', 
 		{
-			"chat_sender": uid,
-			"chat_receiver": activeTab.users.map((u) => u.uid),
-			"chat_line": msg
+			"group_id": activeTab.groupid,
+			"user_id": uid,
+			"text_line": msg
 		})
 		.then(response => {
 			if(response.status == 200)
 			{ 
-				//const newMsg = Object.entries(chat).map((k,v) => {k : k == activeTab.uid ? v.concat([msg]) : v})
-				//setChat(newMsg);
+				const newMsg = Object.entries(chat).map((k,v) => {k : k == activeTab.users[0].uid ? v.concat([
+																			new Message(3, msg, parseInt(uid))]): v})
+				setChat(newMsg);
 			}
 			})
 			.catch(error => {console.log(error); }); 
@@ -146,68 +169,112 @@ const WithListChatPage = () => {
 		
 	const [newChannel, setnewChannel] = useState(false); // Sent and received messages
     
-	const getListShow = (users: IUserProps[] ) => {
-		// for(let el of chat)
+	const getListShow = (users: IUserProps[], group_name: string, groupid: number = -1 ) => {
+		// for(let el of Object.keys(chat))
 		// 	if(el.users === users)
-		// 		setActiveTab(el);
-		// if (mobileDesign) {
-		// 	setListShow(false);
-		// }
+		//
+		if(groupid != -1) 	
+			{	
+			setChat({1: [new Message(1,'hello', 1), new Message(2,'hi', 3)]});
+			// setActiveTab(new MultiUserConversation(1, chat[users[0].uid].map((jmes,i) => new Message(i, jmes['chat_line'], jmes['sender'])),
+			// 													[teamUsers[0]]));
+			setActiveTab(new MultiUserConversation(1, group_name, groupid, [new Message(1,'hello', 1), new Message(2,'hi', 3)], users));
+			// if (mobileDesign) {
+			// 	setListShow(false);c
+			// }
+			}
+		else{
+			axios.post('https://api.heynova.work/chat/group/get', 
+					{
+					"group_id": groupid
+					})
+				.then(response => {
+						if(response.status == 200)
+							setActiveTab(new MultiUserConversation(1, group_name, groupid, response.data.map((u) => (new Message(1,'hello', 1))), users));
+				})
+				.catch(error => {console.log(error); }); 
+		}
 	};
 
 	const formik = useFormik({
-		onSubmit: () => {},
+		onSubmit: (values) => {
+			axios.post('https://api.heynova.work/chat/group/add', 
+		{
+			"group_name": values.channelName,
+		})
+		.then(response => {
+			if(response.status == 200)
+			{ 
+				let gid = response.data
+				let us = values.teamMembers.map(i => i.uid).concat([parseInt(uid)])
+				axios.post('https://api.heynova.work/chat/group/user/add/list', 
+					{
+						"group_id": gid,
+						"users": us
+					})
+				.then(response => {
+						if(response.status == 200)
+							getListShow(values.teamMembers, values.channelName, gid);
+				})
+				.catch(error => {console.log(error); }); 
+			}
+			})
+			.catch(error => {console.log(error); });
+		},
 		initialValues: {
 			channelName: '',
 		    description: '',
 			teamMembers: []
 		},
+		
 	});
 
 	const handleChangeSelected = (e: MultiValue<IUserProps>): void => {
 		setselectedUserOptions(e.map((item) => item));
 	  };
-	
-	// useEffect(() => {
-	// 	const ws = new WebSocket("");
-
-	// 	const apiCall = {
-	// 		event: "bts:subscribe",
-	// 		data: { channel: "order_book_btcusd" },
-	// 	};
-		
-	// 	ws.onopen = (event) => {
-	// 		ws.send(JSON.stringify(apiCall));
-	// 	};
-	
-	// 	ws.onmessage = function (event) {
-	// 		const json = JSON.parse(event.data);
-	// 		try {
-	// 			if ((json.event = "data")) {
-	// 				setMessages(json.data.messages);
-	// 			}
-	// 		} catch (err) {
-	// 			console.log(err);
-	// 		}
-	// 	};}, []);
 
 	const [searchedName, setsearchedName] = useState("");
+
+	function createGroup(users, groupname=''){
+		axios.post('https://api.heynova.work/chat/group/add', 
+		{
+			"group_name": groupname,
+		})
+		.then(response => {
+			if(response.status == 200)
+			{ 
+				let gid = response.data
+				axios.post('https://api.heynova.work/chat/group/user/add/list', 
+					{
+						"group_id": gid,
+						"users": users.map(i => i.uid).concat([uid])
+					})
+				.then(response => {
+						if(response.status == 200)
+							getListShow(users, groupname, gid);
+				})
+				.catch(error => {console.log(error); }); 
+			}
+			})
+			.catch(error => {console.log(error); }); 
+	}
 
     
 	function handleSearch(event){
 		setsearchedName(event.target.value);
 	}
 
-	function updateChat(data, uid){
-		setChat(Object.fromEntries(Object.entries(chat).concat([(uid, data)])));
+	function updateChat(data, puid){
+		const newChat = { ...chat, puid : chat[puid].concat(data) };
+		setChat(newChat);
 	}
 
 	const subscribe = async () => {
 		for(let u of teamUsers) {
-			const events = new EventSource("https://api.heynova.work/chat/get/id1=" + uid + '&id2=' + u.uid);
-			events.onmessage = event => {
-				const parsedData = JSON.parse(event.data);
-				updateChat(parsedData, u.uid);
+		const event = new EventSource("https://api.heynova.work/chat/get?id1=" + uid + '&id2=' + u.uid);
+		event.onmessage = event => {
+			const parsedData = JSON.parse(event.data);
+			updateChat(parsedData, u.uid);
 		};
 	}
 	};
@@ -296,7 +363,7 @@ const WithListChatPage = () => {
 																	className="button"
 																	onClick={() => {
 																		setbuttonPopup(false);
-																		getListShow(selectedUserOptions);
+																		createGroup(selectedUserOptions);
 																	}}>
 																	Start chatting!
 																</Button>
@@ -310,7 +377,9 @@ const WithListChatPage = () => {
 									<Card shadow='none' className='mb-0'>
 										<CardHeader className='sticky-top'>
 											<CardLabel icon='AccountCircle' iconColor='success'>
-												<Button onClick={() => {setbuttonPopup(true);}}>New Chat</Button>
+												<Button onClick={() => 
+													{setbuttonPopup(true);}
+													}>New Chat</Button>
 											</CardLabel>
 											<Button onClick={() => setnewChannel(true)}>New Channel</Button>
 										</CardHeader>
@@ -320,8 +389,8 @@ const WithListChatPage = () => {
 												   .filter(user => user.isOnline)
 												   .map((user) => (
 												<ChatListItem
-													onClick={() => getListShow([user])}
-													isActive={activeTab instanceof ChannelConversation ? false : activeTab.users.length == 1 && activeTab.users[0] === user}
+													onClick={() => getListShow([user], user.name)}
+													isActive={activeTab.users.length == 1 && activeTab.users[0] === user}
 													src={UserImage6}
 													srcSet={UserImage6Webp}
 													name={user.name}
@@ -351,7 +420,7 @@ const WithListChatPage = () => {
 											    .filter(user => !user.isOnline)
 											    .map((user) => (
 												<ChatListItem
-													onClick={() => getListShow([user])}
+													onClick={() => getListShow([user], user.name)}
 													isActive={false}
 													src={UserImage6}
 													srcSet={UserImage6Webp}

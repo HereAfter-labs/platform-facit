@@ -1,35 +1,25 @@
 import { IUserProps } from './UserData';
 import { Message } from './Message';
+import internal from 'stream';
 
 export interface IConversation {
     id: number;
     name: string;
+    groupid: number;
     messages: Message[];
     users: IUserProps[];
 }
-export class ChannelConversation implements IConversation {
+export class MultiUserConversation implements IConversation {
     id: number;
     name: string;
     messages: Message[];
     users: IUserProps[];
+    groupid: number;
 
-    constructor(id: number, name: string,  messages: Message[], users: IUserProps[]) {
+    constructor(id: number, name: string,  groupid: number,  messages: Message[], users: IUserProps[]) {
         this.id = id;
         this.name = name;
-        this.messages = messages;
-        this.users = users;
-    }
-}
-
-export class MultiUserConversation implements IConversation  {
-    id: number;
-    name: string;
-    users: IUserProps[];
-    messages: Message[];
-
-    constructor(id: number, messages: Message[], users: IUserProps[]) {
-        this.id = id;
-        this.name = users.map((u) => u.name).join(', ');
+        this.groupid = groupid
         this.messages = messages;
         this.users = users;
     }

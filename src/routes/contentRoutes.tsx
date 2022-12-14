@@ -1,5 +1,5 @@
 import React, { lazy } from 'react';
-import { dashboardMenu, pages, Teams, CalendarItem, ChatItem, TodosItem } from '../menu';
+import { dashboardMenu, pages, officeMenu, Teams, CalendarItem, ChatItem, TodosItem } from '../menu';
 import Login from '../pages/presentation/auth/Login';
 
 const LANDING = {
@@ -19,6 +19,9 @@ const APP = {
 	CHAT: {
 		WITH_LIST: lazy(() => import('../pages/presentation/chat/WithListChatPage')),
 	},
+	VOICE: {
+		INIT: lazy(() => import('../pages/presentation/voice/VoiceChannel')),
+	}
 };
 const PAGE_LAYOUTS = {
 	ASIDE: lazy(() => import('../pages/presentation/aside-types/DefaultAsidePage'))
@@ -267,6 +270,15 @@ const presentation = [
 		element: <APP.CHAT.WITH_LIST />,
 	 	exact: true,
 	},
+
+	// /**
+	//  * App > Voice
+	//  */
+	{
+		path: officeMenu.voice.subMenu.codeware_voice.path,
+	    element: <APP.VOICE.INIT />,
+		exact: true,
+   	}
 
 	/**
 	 * END - App

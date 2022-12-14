@@ -82,14 +82,14 @@ export const officeMenu = {
 			path: 'page-layouts/blank',
 			//icon: 'check_box_outline_blank ',
 			subMenu: {
-				onlySubheader: {
-					id: 'onlySubheader',
+				codeware_voice: {
+					id: 'codeware_voice',
 					text: 'Codeware',
 					path: 'page-layouts/only-subheader',
 					icon: 'ViewStream',
 				},
-				onlyContent: {
-					id: 'onlyContent',
+				silent_channel: {
+					id: 'silent_channel',
 					text: 'Silent',
 					path: 'page-layouts/only-content',
 					icon: 'WebAsset',
